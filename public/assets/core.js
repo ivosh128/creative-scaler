@@ -6,6 +6,7 @@ window.CS = (function () {
 
   const I = {
     cs: {
+      eyebrow_hero: 'Kalkulačka kreativ pro Meta Ads', calc_eyebrow: 'Kalkulačka', calc_h: 'Spočítejte si to', results_eyebrow: 'Výsledek pro váš účet', cost_eyebrow: 'Náklady na výrobu', fat_eyebrow: 'Únava kreativ', plan_eyebrow: 'Rytmus testování', cta_eyebrow: 'Další krok', by: 'by MAIRA', cta_btn: 'Chci kreativy',
       h1a: 'Kolik kreativ', h1b: 'opravdu', h1c: 'potřebujete?',
       lead: 'Zadejte, kolik měsíčně utrácíte na Metě. Spočítáme, kolik nových reklam musíte každý měsíc otestovat, kolik jich má být v účtu živých a kolik to bude stát, aby výkon nepadal únavou kreativ.',
       spend_eyebrow: 'Měsíční spend', spend_label: 'Spend na Metě bez katalogu', u_month: 'Kč / měs.',
@@ -47,6 +48,7 @@ window.CS = (function () {
       loading: 'Načítám…', logout: 'Odhlásit'
     },
     sk: {
+      eyebrow_hero: 'Kalkulačka kreatív pre Meta Ads', calc_eyebrow: 'Kalkulačka', calc_h: 'Spočítajte si to', results_eyebrow: 'Výsledok pre váš účet', cost_eyebrow: 'Náklady na výrobu', fat_eyebrow: 'Únava kreatív', plan_eyebrow: 'Rytmus testovania', cta_eyebrow: 'Ďalší krok', by: 'by MAIRA', cta_btn: 'Chcem kreatívy',
       h1a: 'Koľko kreatív', h1b: 'naozaj', h1c: 'potrebujete?',
       lead: 'Zadajte, koľko mesačne míňate na Mete. Spočítame, koľko nových reklám musíte každý mesiac otestovať, koľko ich má byť v účte živých a koľko to bude stáť, aby výkon neklesal únavou kreatív.',
       spend_eyebrow: 'Mesačný spend', spend_label: 'Spend na Mete bez katalógu', u_month: 'Kč / mes.',
@@ -88,6 +90,7 @@ window.CS = (function () {
       loading: 'Načítavam…', logout: 'Odhlásiť'
     },
     en: {
+      eyebrow_hero: 'Creative calculator for Meta Ads', calc_eyebrow: 'Calculator', calc_h: 'Run the numbers', results_eyebrow: 'Result for your account', cost_eyebrow: 'Production cost', fat_eyebrow: 'Creative fatigue', plan_eyebrow: 'Testing rhythm', cta_eyebrow: 'Next step', by: 'by MAIRA', cta_btn: 'I want creatives',
       h1a: 'How many creatives', h1b: 'do you really', h1c: 'need?',
       lead: 'Enter your monthly Meta spend. We calculate how many new ads you need to test each month, how many should be live in the account and what it costs, so performance does not drop from creative fatigue.',
       spend_eyebrow: 'Monthly spend', spend_label: 'Meta spend excluding catalog', u_month: 'CZK / mo',
@@ -185,14 +188,14 @@ window.CS = (function () {
     const c = $('chart'); if (!c) return;
     const { S } = R, base = S.cpa > 0 ? S.cpa : 100, useKc = S.cpa > 0;
     const { w, wo } = curves();
-    const W = 640, H = 260, m = { l: 56, r: 16, t: 16, b: 30 };
+    const W = 960, H = 360, m = { l: 64, r: 20, t: 24, b: 36 };
     const iw = W - m.l - m.r, ih = H - m.t - m.b;
     const maxV = Math.ceil(Math.max(...wo) / 25) * 25, minV = 75;
     const x = i => m.l + i / 12 * iw, y = v => m.t + (1 - (v - minV) / (maxV - minV)) * ih;
     const val = v => useKc ? kc(base * v / 100) : fmt(v);
     let g = '';
-    for (let v = minV; v <= maxV; v += 25) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${esc(useKc ? fmt(Math.round(base * v / 100)) : fmt(v))}</text>`;
-    for (let i = 0; i <= 12; i += 2) g += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${esc(t('wk'))}${i}</text>`;
+    for (let v = minV; v <= maxV; v += 25) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${m.l - 12}" y="${y(v) + 5}" text-anchor="end">${esc(useKc ? fmt(Math.round(base * v / 100)) : fmt(v))}</text>`;
+    for (let i = 0; i <= 12; i += 2) g += `<text x="${x(i)}" y="${H - 10}" text-anchor="middle">${esc(t('wk'))}${i}</text>`;
     const path = a => a.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
     c.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t('fat_h'))}">${g}
       <path d="${path(wo)}" fill="none" stroke="var(--neutral-line)" stroke-width="2" stroke-dasharray="6 5"/>

@@ -3,137 +3,187 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Creative Scaler</title>
+<title>Creative Scaler · MAIRA</title>
 <meta name="description" content="Kolik kreativ opravdu potřebujete na Meta Ads?">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#083027">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap">
 <link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body>
+
+<!-- ============ HLAVIČKA + HERO (zelená) ============ -->
 <div class="wrap">
-  <header class="top">
-    <div class="brand">Creative <span>Scaler</span></div>
-    <div class="tools">
-      <div class="seg" role="group" aria-label="Jazyk" id="langSeg">
-        <button type="button" data-lang="cs">CZ</button>
-        <button type="button" data-lang="sk">SK</button>
-        <button type="button" data-lang="en">EN</button>
+  <header class="site-head">
+    <a class="brand" href="/"><b>Creative Scaler</b><small data-i18n="by"></small></a>
+    <nav class="nav" aria-label="Navigace">
+      <div class="langs" role="group" aria-label="Jazyk" id="langSeg">
+        <button type="button" class="lang" data-lang="cs">CZ</button>
+        <button type="button" class="lang" data-lang="sk">SK</button>
+        <button type="button" class="lang" data-lang="en">EN</button>
       </div>
-    </div>
+      <a class="btn primary" href="#cta" data-i18n="cta_btn"></a>
+    </nav>
   </header>
 
   <section class="hero">
-    <h1><span data-i18n="h1a"></span> <em data-i18n="h1b"></em> <span data-i18n="h1c"></span></h1>
-    <p class="lead" data-i18n="lead"></p>
-  </section>
-
-  <div class="grid">
-    <form class="controls" id="f" autocomplete="off">
-      <div class="group">
-        <p class="eyebrow" data-i18n="spend_eyebrow"></p>
-        <div class="seg full" role="group" aria-label="Rozpočet">
-          <button type="button" data-p="200000">200k</button>
-          <button type="button" data-p="500000">500k</button>
-          <button type="button" data-p="1000000">1M</button>
-          <button type="button" data-p="3000000">3M</button>
-        </div>
-        <div class="field">
-          <label for="spend" data-i18n="spend_label"></label>
-          <div class="in"><input id="spend" type="text" inputmode="numeric" value="1 000 000"><span class="u" data-i18n="u_month"></span></div>
-          <input id="spendR" type="range" min="50000" max="5000000" step="50000" value="1000000" aria-label="Spend">
-          <span class="hint" id="dailyHint"></span>
-        </div>
-        <div class="field">
-          <label for="market" data-i18n="market"></label>
-          <div class="in"><select id="market"></select></div>
-        </div>
+    <div class="hero-copy">
+      <div>
+        <span class="eyebrow-lg" data-i18n="eyebrow_hero"></span>
+        <h1><span data-i18n="h1a"></span> <em data-i18n="h1b"></em> <span data-i18n="h1c"></span></h1>
       </div>
-      <div class="group">
-        <p class="eyebrow" data-i18n="perf_eyebrow"></p>
-        <div class="pair">
-          <div class="field"><label for="cpa">CPA</label><div class="in"><input id="cpa" type="text" inputmode="decimal" placeholder="450"><span class="u">Kč</span></div></div>
-          <div class="field"><label for="roas">ROAS</label><div class="in"><input id="roas" type="text" inputmode="decimal" placeholder="5"><span class="u">×</span></div></div>
+      <p class="lead" data-i18n="lead"></p>
+    </div>
+    <div class="stripes" aria-hidden="true"><i style="--w:34%"></i><i style="--w:50%"></i><i style="--w:66%"></i><i style="--w:84%"></i><i style="--w:100%"></i></div>
+  </section>
+</div>
+
+<!-- ============ KALKULAČKA (oranžová) ============ -->
+<section class="section on-orange" id="calc">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow-lg" data-i18n="calc_eyebrow"></span>
+      <h2 data-i18n="calc_h"></h2>
+    </div>
+    <div class="calc">
+      <form class="controls on-light" id="f" autocomplete="off">
+        <div class="group">
+          <p class="eyebrow" data-i18n="spend_eyebrow"></p>
+          <div class="seg full" role="group" aria-label="Rozpočet">
+            <button type="button" data-p="200000">200k</button>
+            <button type="button" data-p="500000">500k</button>
+            <button type="button" data-p="1000000">1M</button>
+            <button type="button" data-p="3000000">3M</button>
+          </div>
+          <div class="field">
+            <label for="spend" data-i18n="spend_label"></label>
+            <div class="in"><input id="spend" type="text" inputmode="numeric" value="1 000 000"><span class="u" data-i18n="u_month"></span></div>
+            <input id="spendR" type="range" min="50000" max="5000000" step="50000" value="1000000" aria-label="Spend">
+            <span class="hint" id="dailyHint"></span>
+          </div>
+          <div class="field">
+            <label for="market" data-i18n="market"></label>
+            <div class="in"><select id="market"></select></div>
+          </div>
+        </div>
+        <div class="group">
+          <p class="eyebrow" data-i18n="perf_eyebrow"></p>
+          <div class="pair">
+            <div class="field"><label for="cpa">CPA</label><div class="in"><input id="cpa" type="text" inputmode="decimal" placeholder="450"><span class="u">Kč</span></div></div>
+            <div class="field"><label for="roas">ROAS</label><div class="in"><input id="roas" type="text" inputmode="decimal" placeholder="5"><span class="u">×</span></div></div>
+          </div>
           <div class="field"><label for="current" data-i18n="current"></label><div class="in"><input id="current" type="text" inputmode="numeric" placeholder="8"><span class="u" data-i18n="u_pcs_m"></span></div></div>
           <div class="field"><label for="liveNow" data-i18n="liveNow"></label><div class="in"><input id="liveNow" type="text" inputmode="numeric" placeholder="12"><span class="u" data-i18n="u_pcs"></span></div></div>
         </div>
-      </div>
-    </form>
+      </form>
 
-    <div class="results" aria-live="polite">
-      <section class="big">
-        <div class="k" data-i18n="big_k"></div>
-        <div class="n" id="rNew">–</div>
-        <div class="side">
-          <p class="s" id="rNewS" data-i18n="loading"></p>
-          <div class="split">
-            <div><b id="rVid">–</b><span data-i18n="videos"></span></div>
-            <div><b id="rStat">–</b><span data-i18n="statics"></span></div>
-            <div><b id="rYear">–</b><span data-i18n="per_year"></span></div>
+      <div class="results" aria-live="polite">
+        <section class="big">
+          <div class="k" data-i18n="big_k"></div>
+          <div class="n" id="rNew">–</div>
+          <div class="side">
+            <p class="s" id="rNewS" data-i18n="loading"></p>
+            <div class="split">
+              <div><b id="rVid">–</b><span data-i18n="videos"></span></div>
+              <div><b id="rStat">–</b><span data-i18n="statics"></span></div>
+              <div><b id="rYear">–</b><span data-i18n="per_year"></span></div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <div class="kpis">
-        <div class="kpi"><div class="k" data-i18n="kpi_live"></div><div class="n"><span id="rLive">–</span><small id="rLiveNow"></small></div><div class="s" data-i18n="kpi_live_s"></div></div>
-        <div class="kpi"><div class="k" data-i18n="kpi_week"></div><div class="n" id="rWeek">–</div><div class="s" id="rWeekS"></div></div>
-        <div class="kpi"><div class="k" data-i18n="kpi_sets"></div><div class="n" id="rSets">–</div><div class="s" id="rSetsS"></div></div>
+        <div class="kpis">
+          <div class="kpi"><div class="k" data-i18n="kpi_live"></div><div class="n"><span id="rLive">–</span><small id="rLiveNow"></small></div><div class="s" data-i18n="kpi_live_s"></div></div>
+          <div class="kpi"><div class="k" data-i18n="kpi_week"></div><div class="n" id="rWeek">–</div><div class="s" id="rWeekS"></div></div>
+          <div class="kpi"><div class="k" data-i18n="kpi_sets"></div><div class="n" id="rSets">–</div><div class="s" id="rSetsS"></div></div>
+        </div>
+
+        <div class="gap" id="gapBox" hidden><div class="n" id="gapN"></div><p id="gapT"></p></div>
+        <div class="alerts" id="alerts"></div>
       </div>
-
-      <div class="gap" id="gapBox" hidden><div class="n" id="gapN"></div><p id="gapT"></p></div>
-      <div class="alerts" id="alerts"></div>
-
-      <section class="card">
-        <div class="card-h"><h2 data-i18n="cost_h"></h2><span class="badge" id="pricesBadge" data-i18n="prices_demo" hidden></span></div>
-        <p class="sub" data-i18n="cost_sub"></p>
-        <div class="cost">
-          <div class="ai"><span class="k" data-i18n="cost_ai"></span><span class="n" id="cAi"></span><span class="s" id="cAiS"></span></div>
-          <div><span class="k" data-i18n="cost_cl"></span><span class="n" id="cCl"></span><span class="s" id="cClS"></span></div>
-        </div>
-        <div class="bars" aria-hidden="true">
-          <div class="bar ai"><span data-i18n="cost_ai"></span><span class="track"><span class="fill" id="bAi"></span></span></div>
-          <div class="bar"><span data-i18n="cost_cl"></span><span class="track"><span class="fill" id="bCl"></span></span></div>
-        </div>
-        <p class="save" id="cSave"></p>
-      </section>
-
-      <section class="card">
-        <div class="card-h">
-          <h2 data-i18n="fat_h"></h2>
-          <div class="legend"><span><span class="ln"></span><span data-i18n="fat_with"></span></span><span><span class="ln d"></span><span data-i18n="fat_without"></span></span></div>
-        </div>
-        <p class="sub" id="fatSub"></p>
-        <div class="chart" id="chart"></div>
-        <p class="note" data-i18n="fat_note"></p>
-      </section>
-
-      <section class="card">
-        <div class="card-h">
-          <h2 data-i18n="plan_h"></h2>
-          <div class="legend"><span><i class="lv"></i><span data-i18n="video"></span></span><span><i class="ls"></i><span data-i18n="static"></span></span></div>
-        </div>
-        <p class="sub" data-i18n="plan_sub"></p>
-        <div class="weeks" id="weeks"></div>
-      </section>
-
-      <section class="cta" id="cta">
-        <h2 data-i18n="cta_h"></h2>
-        <p class="sub" style="color:var(--muted);margin:8px 0 0;max-width:56ch" id="ctaSub"></p>
-        <form id="ctaForm" novalidate>
-          <div class="field"><label for="cName" data-i18n="f_name"></label><div class="in"><input id="cName" name="name" type="text" required maxlength="120" autocomplete="name"></div></div>
-          <div class="field"><label for="cCompany" data-i18n="f_company"></label><div class="in"><input id="cCompany" name="company" type="text" required maxlength="160" autocomplete="organization"></div></div>
-          <div class="field"><label for="cEmail" data-i18n="f_email"></label><div class="in"><input id="cEmail" name="email" type="email" required maxlength="200" autocomplete="email"></div></div>
-          <div class="honey" aria-hidden="true"><label for="cWeb">Web</label><input id="cWeb" name="website" type="text" tabindex="-1" autocomplete="off"></div>
-          <button type="submit" class="btn primary" id="ctaBtn" data-i18n="f_send"></button>
-        </form>
-        <p class="sent" id="ctaMsg" role="status" hidden></p>
-      </section>
     </div>
   </div>
+</section>
 
-  <p class="foot" data-i18n="foot"></p>
-</div>
+<!-- ============ NÁKLADY + ÚNAVA (zelená) ============ -->
+<section class="section">
+  <div class="wrap">
+    <div class="head head-row">
+      <div>
+        <span class="eyebrow-lg" data-i18n="cost_eyebrow"></span>
+        <h2 data-i18n="cost_h"></h2>
+        <p class="sub" data-i18n="cost_sub"></p>
+      </div>
+      <span class="badge" id="pricesBadge" data-i18n="prices_demo" hidden></span>
+    </div>
+    <div class="cost">
+      <div class="ai"><span class="k" data-i18n="cost_ai"></span><span class="n" id="cAi"></span><span class="s" id="cAiS"></span></div>
+      <div><span class="k" data-i18n="cost_cl"></span><span class="n" id="cCl"></span><span class="s" id="cClS"></span></div>
+    </div>
+    <div class="bars" aria-hidden="true">
+      <div class="bar ai"><span data-i18n="cost_ai"></span><span class="track"><span class="fill" id="bAi"></span></span></div>
+      <div class="bar"><span data-i18n="cost_cl"></span><span class="track"><span class="fill" id="bCl"></span></span></div>
+    </div>
+    <p class="save" id="cSave"></p>
+  </div>
+</section>
+
+<section class="section same">
+  <div class="wrap">
+    <div class="head head-row">
+      <div>
+        <span class="eyebrow-lg" data-i18n="fat_eyebrow"></span>
+        <h2 data-i18n="fat_h"></h2>
+        <p class="sub" id="fatSub"></p>
+      </div>
+      <div class="legend"><span><span class="ln"></span><span data-i18n="fat_with"></span></span><span><span class="ln d"></span><span data-i18n="fat_without"></span></span></div>
+    </div>
+    <div class="chart" id="chart"></div>
+    <p class="note" data-i18n="fat_note"></p>
+  </div>
+</section>
+
+<!-- ============ PLÁN (oranžová) ============ -->
+<section class="section on-orange">
+  <div class="wrap">
+    <div class="head head-row">
+      <div>
+        <span class="eyebrow-lg" data-i18n="plan_eyebrow"></span>
+        <h2 data-i18n="plan_h"></h2>
+        <p class="sub" data-i18n="plan_sub"></p>
+      </div>
+      <div class="legend"><span><i class="lv"></i><span data-i18n="video"></span></span><span><i class="ls"></i><span data-i18n="static"></span></span></div>
+    </div>
+    <div class="weeks" id="weeks"></div>
+  </div>
+</section>
+
+<!-- ============ POPTÁVKA (bílá) ============ -->
+<section class="section on-light" id="cta">
+  <div class="wrap cta-grid">
+    <div>
+      <span class="eyebrow-lg" data-i18n="cta_eyebrow"></span>
+      <h2 data-i18n="cta_h"></h2>
+      <p class="sub" id="ctaSub"></p>
+      <form id="ctaForm" class="cta-form" novalidate>
+        <div class="field"><label for="cName" data-i18n="f_name"></label><div class="in"><input id="cName" name="name" type="text" required maxlength="120" autocomplete="name"></div></div>
+        <div class="field"><label for="cCompany" data-i18n="f_company"></label><div class="in"><input id="cCompany" name="company" type="text" required maxlength="160" autocomplete="organization"></div></div>
+        <div class="field full"><label for="cEmail" data-i18n="f_email"></label><div class="in"><input id="cEmail" name="email" type="email" required maxlength="200" autocomplete="email"></div></div>
+        <div class="honey" aria-hidden="true"><label for="cWeb">Web</label><input id="cWeb" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+        <div class="full"><button type="submit" class="btn primary" id="ctaBtn" data-i18n="f_send"></button></div>
+      </form>
+      <p class="sent" id="ctaMsg" role="status" hidden></p>
+    </div>
+    <div class="stripes" aria-hidden="true" style="--c:var(--teal);align-content:start"><i style="--w:100%"></i><i style="--w:82%"></i><i style="--w:64%"></i><i style="--w:46%"></i><i style="--w:28%"></i></div>
+  </div>
+</section>
+
+<footer class="wrap site-foot">
+  <p data-i18n="foot"></p>
+  <p>MAIRA · We make it rain</p>
+</footer>
+
 <script src="/assets/core.js"></script>
 <script src="/assets/public.js"></script>
 </body>

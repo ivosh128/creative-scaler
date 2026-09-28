@@ -36,6 +36,17 @@ Admin heslo otevře i veřejnou část. Změna hesla automaticky odhlásí všec
 
 **Poptávky do Slacku (nepovinné):** ve Slacku vytvořte Incoming Webhook do zvoleného kanálu a jeho adresu vložte do proměnné `SLACK_WEBHOOK_URL`. Každá nová poptávka pak přijde i tam.
 
+## Písmo
+
+Web MAIRA používá písmo **PP Neue Corp Compact**. Soubory písma nejsou v repozitáři, protože jde o placené písmo a jeho licenci spravuje MAIRA. Do té doby se zobrazuje velmi podobné **Archivo** (Google Fonts) ve zúženém řezu.
+
+Až MAIRA písmo dodá a licence to dovolí, stačí nahrát tyto dva soubory do `public/assets/fonts/`:
+
+- `PPNeueCorp-CompactMedium.woff2`
+- `PPNeueCorp-CompactUltrabold.woff2`
+
+Aplikace je začne používat sama, bez další úpravy kódu.
+
 ## Lokální spuštění
 
 ```bash

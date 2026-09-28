@@ -7,18 +7,18 @@
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap">
 <link rel="stylesheet" href="/assets/styles.css">
 </head>
-<body>
+<body class="admin">
 <div class="wrap">
-  <header class="top">
-    <div class="brand">Creative <span>Scaler</span></div>
-    <div class="tools">
+  <header class="site-head">
+    <a class="brand" href="/admin"><b>Creative Scaler</b><small>by MAIRA</small></a>
+    <nav class="nav" aria-label="Navigace">
       <span class="pill">Admin</span>
       <a class="navlink" href="/" target="_blank" rel="noopener">Veřejná část ↗</a>
       <a class="navlink" href="/logout">Odhlásit</a>
-    </div>
+    </nav>
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Sekce adminu">
@@ -29,7 +29,7 @@
 
   <!-- ============ KALKULAČKA ============ -->
   <section id="p-calc" role="tabpanel" aria-labelledby="tab-calc">
-    <div class="grid">
+    <div class="calc">
       <form class="controls" id="f" autocomplete="off">
         <div class="group">
           <p class="eyebrow"><span>Účet klienta</span><span class="badge">Demo</span></p>
@@ -60,9 +60,9 @@
           <div class="pair">
             <div class="field"><label for="cpa">CPA</label><div class="in"><input id="cpa" type="text" inputmode="decimal" placeholder="450"><span class="u">Kč</span></div></div>
             <div class="field"><label for="roas">ROAS</label><div class="in"><input id="roas" type="text" inputmode="decimal" placeholder="5"><span class="u">×</span></div></div>
-            <div class="field"><label for="current">Nových kreativ dnes</label><div class="in"><input id="current" type="text" inputmode="numeric" placeholder="8"><span class="u">ks / měs.</span></div></div>
-            <div class="field"><label for="liveNow">Živých reklam dnes</label><div class="in"><input id="liveNow" type="text" inputmode="numeric" placeholder="12"><span class="u">ks</span></div></div>
           </div>
+          <div class="field"><label for="current">Nových kreativ dnes</label><div class="in"><input id="current" type="text" inputmode="numeric" placeholder="8"><span class="u">ks / měs.</span></div></div>
+          <div class="field"><label for="liveNow">Živých reklam dnes</label><div class="in"><input id="liveNow" type="text" inputmode="numeric" placeholder="12"><span class="u">ks</span></div></div>
           <label class="check" for="useCpa"><input id="useCpa" type="checkbox"><span>Navýšit budget sady podle CPA, aby nasbírala ~50 konverzí týdně</span></label>
         </div>
         <details class="group">
@@ -239,7 +239,7 @@
     </table></div>
   </section>
 
-  <p class="foot">Pravidla označená „z praxe“ vychází z forecastingu u nejúspěšnějších klientů. Demo účty, graf únavy a ceny označené jako ukázkové je potřeba nahradit skutečnými daty.</p>
+  <p class="site-foot" style="border-top:1px solid var(--line);margin-top:48px">Pravidla označená „z praxe“ vychází z forecastingu u nejúspěšnějších klientů. Demo účty, graf únavy a ceny označené jako ukázkové je potřeba nahradit skutečnými daty.</p>
 </div>
 <script src="/assets/core.js"></script>
 <script src="/admin/admin.js"></script>

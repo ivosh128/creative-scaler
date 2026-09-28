@@ -5,23 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Přihlášení · Creative Scaler</title>
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#083027">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap">
 <link rel="stylesheet" href="/assets/styles.css">
 </head>
-<body>
-<main class="login">
-  <form class="login-box" method="post" action="/login">
-    <div class="brand">Creative <span>Scaler</span></div>
-    <h1 id="title">Přihlášení</h1>
-    <p class="hint" id="sub" style="margin:0;font-size:14px">Zadejte heslo, které jste dostali od týmu.</p>
+<body class="login">
+<div class="wrap">
+  <header class="site-head">
+    <a class="brand" href="/"><b>Creative Scaler</b><small>by MAIRA</small></a>
+  </header>
+</div>
+<main class="wrap">
+  <form class="login-box on-light" method="post" action="/login" style="background:var(--white);color:var(--teal)">
+    <div>
+      <span class="eyebrow-lg" id="sub">Zadejte heslo od týmu</span>
+      <h1 id="title">Přihlášení</h1>
+    </div>
     <input type="hidden" name="next" id="next" value="/">
     <div class="field">
       <label for="password">Heslo</label>
       <div class="in"><input id="password" name="password" type="password" autocomplete="current-password" required autofocus></div>
     </div>
-    <p class="msg err" id="err" hidden></p>
+    <p class="msg err" id="err" hidden style="margin:0"></p>
     <button type="submit" class="btn primary">Pokračovat</button>
   </form>
 </main>
@@ -30,7 +37,7 @@
   var q=new URLSearchParams(location.search);
   var n=q.get('next')||'/';
   if(n.charAt(0)==='/'&&n.charAt(1)!=='/')document.getElementById('next').value=n;
-  if(q.get('admin')){document.getElementById('title').textContent='Admin';document.getElementById('sub').textContent='Interní část pro tým. Zadejte admin heslo.';}
+  if(q.get('admin')){document.getElementById('title').textContent='Admin';document.getElementById('sub').textContent='Interní část pro tým';}
   var e=q.get('e'),el=document.getElementById('err');
   if(e==='bad'){el.hidden=false;el.textContent='Heslo nesedí. Zkuste to znovu.';}
   if(e==='limit'){el.hidden=false;el.textContent='Příliš mnoho pokusů. Zkuste to za 15 minut.';}
