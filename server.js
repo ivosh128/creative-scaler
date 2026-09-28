@@ -17,8 +17,15 @@ const SESSION_DAYS = 14;
 
 if (!ADMIN_PASSWORD) console.warn('[creative-scaler] ADMIN_PASSWORD není nastavené – admin je nedostupný.');
 if (!SESSION_SECRET) {
-  SESSION_SECRET = crypto.randomBytes(32).toString('hex');
-  console.warn('[creative-scaler] SESSION_SECRET není nastavené – po restartu se všichni odhlásí.');
+  // Bez SESSION_SECRET si server jednou vygeneruje náhodný klíč a uloží ho vedle dat,
+  // takže přihlášení vydrží i restart a nikdo nemusí nic vymýšlet.
+  const keyFile = require('path').join(store.DATA_DIR, 'session.key');
+  try { SESSION_SECRET = require('fs').readFileSync(keyFile, 'utf8').trim(); } catch (e) {}
+  if (!SESSION_SECRET) {
+    SESSION_SECRET = crypto.randomBytes(32).toString('hex');
+    try { require('fs').writeFileSync(keyFile, SESSION_SECRET, { mode: 0o600 }); }
+    catch (e) { console.warn('[creative-scaler] Klíč přihlášení nejde uložit – po restartu se všichni odhlásí.'); }
+  }
 }
 console.log(`[creative-scaler] Data: ${store.DATA_DIR} · veřejná část ${PUBLIC_OPEN ? 'otevřená' : (PUBLIC_PASSWORD ? 'pod heslem' : 'zavřená (jen admin)')}`);
 

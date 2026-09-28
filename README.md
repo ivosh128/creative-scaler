@@ -24,10 +24,9 @@ Admin heslo otevře i veřejnou část. Změna hesla automaticky odhlásí všec
 ## Nasazení na Railway
 
 1. V Railway klikněte **New Project → Deploy from GitHub repo** a vyberte `creative-scaler`.
-2. V záložce **Variables** přidejte:
+2. V záložce **Variables** přidejte (klíč pro přihlášení si aplikace vygeneruje sama a uloží na volume):
    - `ADMIN_PASSWORD` – heslo pro tým
    - `PUBLIC_PASSWORD` – heslo na prezentaci
-   - `SESSION_SECRET` – dlouhý náhodný text (stačí 40 náhodných znaků)
    - `DATA_DIR` = `/data`
 3. Přidejte **Volume** (pravým tlačítkem na službu → Attach Volume) s cestou `/data`. Tam se ukládá nastavení a poptávky. Bez volume by se po každém nasazení smazaly.
 4. V **Settings → Networking** klikněte na **Generate Domain**. Dostanete adresu typu `creative-scaler-production.up.railway.app`.
