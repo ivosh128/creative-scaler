@@ -8,6 +8,9 @@ const store = require('./store');
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 const PUBLIC_PASSWORD = process.env.PUBLIC_PASSWORD || '';
+// Veřejná část je bez hesla otevřená jen tehdy, když to někdo výslovně zapne (PUBLIC_OPEN=true).
+// Bez hesla i bez PUBLIC_OPEN je zavřená a pustí jen admina – nic se tak neotevře omylem.
+const PUBLIC_OPEN = !PUBLIC_PASSWORD && String(process.env.PUBLIC_OPEN || '').toLowerCase() === 'true';
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL || '';
 let SESSION_SECRET = process.env.SESSION_SECRET || '';
 const SESSION_DAYS = 14;
@@ -17,7 +20,7 @@ if (!SESSION_SECRET) {
   SESSION_SECRET = crypto.randomBytes(32).toString('hex');
   console.warn('[creative-scaler] SESSION_SECRET není nastavené – po restartu se všichni odhlásí.');
 }
-console.log(`[creative-scaler] Data: ${store.DATA_DIR} · veřejná část ${PUBLIC_PASSWORD ? 'pod heslem' : 'otevřená'}`);
+console.log(`[creative-scaler] Data: ${store.DATA_DIR} · veřejná část ${PUBLIC_OPEN ? 'otevřená' : (PUBLIC_PASSWORD ? 'pod heslem' : 'zavřená (jen admin)')}`);
 
 const app = express();
 app.set('trust proxy', 1);
@@ -83,7 +86,7 @@ const safeNext = n => (typeof n === 'string' && n.startsWith('/') && !n.startsWi
 function wantsHtml(req) { return !req.path.startsWith('/api/'); }
 
 function requirePublic(req, res, next) {
-  if (!PUBLIC_PASSWORD) return next();
+  if (PUBLIC_OPEN) return next();
   const role = readRole(req);
   if (role === 'public' || role === 'admin') return next();
   if (wantsHtml(req)) return res.redirect('/login?next=' + encodeURIComponent(req.originalUrl));
