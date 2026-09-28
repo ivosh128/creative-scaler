@@ -1,0 +1,17 @@
+{
+  "name": "creative-scaler",
+  "version": "0.4.0",
+  "private": true,
+  "description": "Kalkulačka doporučeného počtu kreativ pro Meta Ads – veřejná část pro klienty a interní admin.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "ADMIN_PASSWORD=admin PUBLIC_PASSWORD=demo SESSION_SECRET=dev-secret node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

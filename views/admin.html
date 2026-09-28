@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Admin · Creative Scaler</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Creative <span>Scaler</span></div>
+    <div class="tools">
+      <span class="pill">Admin</span>
+      <a class="navlink" href="/" target="_blank" rel="noopener">Veřejná část ↗</a>
+      <a class="navlink" href="/logout">Odhlásit</a>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sekce adminu">
+    <button type="button" role="tab" id="tab-calc" aria-controls="p-calc" aria-selected="true">Kalkulačka</button>
+    <button type="button" role="tab" id="tab-settings" aria-controls="p-settings" aria-selected="false">Nastavení</button>
+    <button type="button" role="tab" id="tab-leads" aria-controls="p-leads" aria-selected="false">Poptávky<span class="count" id="leadCount" hidden></span></button>
+  </nav>
+
+  <!-- ============ KALKULAČKA ============ -->
+  <section id="p-calc" role="tabpanel" aria-labelledby="tab-calc">
+    <div class="grid">
+      <form class="controls" id="f" autocomplete="off">
+        <div class="group">
+          <p class="eyebrow"><span>Účet klienta</span><span class="badge">Demo</span></p>
+          <div class="in"><select id="account" aria-label="Účet klienta"></select></div>
+          <span class="hint">Ukázkové účty. V ostré verzi se spend, CPA, ROAS a počet reklam načtou přímo z Meta účtu klienta.</span>
+        </div>
+        <div class="group">
+          <p class="eyebrow">Měsíční spend</p>
+          <div class="seg full" role="group" aria-label="Rozpočet">
+            <button type="button" data-p="200000">200k</button>
+            <button type="button" data-p="500000">500k</button>
+            <button type="button" data-p="1000000">1M</button>
+            <button type="button" data-p="3000000">3M</button>
+          </div>
+          <div class="field">
+            <label for="spend">Spend na Metě bez katalogu</label>
+            <div class="in"><input id="spend" type="text" inputmode="numeric" value="1 000 000"><span class="u">Kč / měs.</span></div>
+            <input id="spendR" type="range" min="50000" max="5000000" step="50000" value="1000000" aria-label="Spend">
+            <span class="hint" id="dailyHint"></span>
+          </div>
+          <div class="pair">
+            <div class="field"><label for="market">Trh</label><div class="in"><select id="market"></select></div></div>
+            <div class="field"><label for="pct">Na testování</label><div class="in"><input id="pct" type="text" inputmode="numeric"><span class="u">%</span></div></div>
+          </div>
+        </div>
+        <div class="group">
+          <p class="eyebrow">Výkon účtu · nepovinné</p>
+          <div class="pair">
+            <div class="field"><label for="cpa">CPA</label><div class="in"><input id="cpa" type="text" inputmode="decimal" placeholder="450"><span class="u">Kč</span></div></div>
+            <div class="field"><label for="roas">ROAS</label><div class="in"><input id="roas" type="text" inputmode="decimal" placeholder="5"><span class="u">×</span></div></div>
+            <div class="field"><label for="current">Nových kreativ dnes</label><div class="in"><input id="current" type="text" inputmode="numeric" placeholder="8"><span class="u">ks / měs.</span></div></div>
+            <div class="field"><label for="liveNow">Živých reklam dnes</label><div class="in"><input id="liveNow" type="text" inputmode="numeric" placeholder="12"><span class="u">ks</span></div></div>
+          </div>
+          <label class="check" for="useCpa"><input id="useCpa" type="checkbox"><span>Navýšit budget sady podle CPA, aby nasbírala ~50 konverzí týdně</span></label>
+        </div>
+        <details class="group">
+          <summary>Předpoklady pro tento výpočet</summary>
+          <div class="inner">
+            <div class="pair">
+              <div class="field"><label for="daily">Denní budget sady</label><div class="in"><input id="daily" type="text" inputmode="numeric"><span class="u">Kč</span></div></div>
+              <div class="field"><label for="days">Délka testu</label><div class="in"><input id="days" type="text" inputmode="numeric"><span class="u">dní</span></div></div>
+              <div class="field"><label for="vid">Videí v sadě</label><div class="in"><input id="vid" type="text" inputmode="numeric"><span class="u">ks</span></div></div>
+              <div class="field"><label for="stat">Statik v sadě</label><div class="in"><input id="stat" type="text" inputmode="numeric"><span class="u">ks</span></div></div>
+              <div class="field"><label for="win">Vítězů ze sady</label><div class="in"><input id="win" type="text" inputmode="numeric"><span class="u">ks</span></div></div>
+              <div class="field"><label for="life">Životnost vítěze</label><div class="in"><input id="life" type="text" inputmode="numeric"><span class="u">týd.</span></div></div>
+            </div>
+            <span class="hint">Změny tady platí jen pro tento výpočet. Výchozí hodnoty pro všechny se mění v záložce Nastavení.</span>
+            <button type="button" class="btn" id="resetAssump">Vrátit výchozí hodnoty</button>
+          </div>
+        </details>
+      </form>
+
+      <div class="results" aria-live="polite">
+        <section class="big">
+          <div class="k">Nových kreativ každý měsíc</div>
+          <div class="n" id="rNew">–</div>
+          <div class="side">
+            <p class="s" id="rNewS">Načítám…</p>
+            <div class="split">
+              <div><b id="rVid">–</b><span>videí</span></div>
+              <div><b id="rStat">–</b><span>statik</span></div>
+              <div><b id="rYear">–</b><span>za rok</span></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="kpis">
+          <div class="kpi"><div class="k">Živých v účtu</div><div class="n"><span id="rLive">–</span><small id="rLiveNow"></small></div><div class="s">doporučeno současně, testy i vítězové</div></div>
+          <div class="kpi"><div class="k">Každý týden</div><div class="n" id="rWeek">–</div><div class="s" id="rWeekS"></div></div>
+          <div class="kpi"><div class="k">Testovacích sad</div><div class="n" id="rSets">–</div><div class="s" id="rSetsS"></div></div>
+        </div>
+
+        <div class="gap" id="gapBox" hidden><div class="n" id="gapN"></div><p id="gapT"></p></div>
+        <div class="alerts" id="alerts"></div>
+
+        <section class="card">
+          <div class="card-h"><h2>Poslat klientovi</h2></div>
+          <p class="sub">Odkaz otevře veřejnou kalkulačku s čísly z tohoto výpočtu. Dokud je veřejná část pod heslem, pošlete klientovi i heslo.</p>
+          <div class="pair" style="margin-bottom:12px;max-width:360px">
+            <div class="field"><label for="shareLang">Jazyk pro klienta</label><div class="in"><select id="shareLang"><option value="cs">Čeština</option><option value="sk">Slovenčina</option><option value="en">English</option></select></div></div>
+          </div>
+          <div class="share-row">
+            <div class="share-url" id="shareUrl"></div>
+            <button type="button" class="btn primary" id="copyShare">Zkopírovat odkaz</button>
+          </div>
+          <p class="hint" style="margin:10px 0 0"><a class="navlink" id="openShare" href="/" target="_blank" rel="noopener">Otevřít, jak to uvidí klient ↗</a> <span class="toast" id="shareToast" role="status"></span></p>
+        </section>
+
+        <section class="card">
+          <div class="card-h"><h2>Kolik to stojí</h2><span class="badge" id="pricesBadge" hidden>Ukázkové ceny</span></div>
+          <p class="sub">Měsíční výroba doporučeného objemu kreativ. Ceny se nastavují v záložce Nastavení.</p>
+          <div class="cost">
+            <div class="ai"><span class="k">AI produkce</span><span class="n" id="cAi"></span><span class="s" id="cAiS"></span></div>
+            <div><span class="k">Klasická produkce</span><span class="n" id="cCl"></span><span class="s" id="cClS"></span></div>
+          </div>
+          <div class="bars" aria-hidden="true">
+            <div class="bar ai"><span>AI produkce</span><span class="track"><span class="fill" id="bAi"></span></span></div>
+            <div class="bar"><span>Klasická produkce</span><span class="track"><span class="fill" id="bCl"></span></span></div>
+          </div>
+          <p class="save" id="cSave"></p>
+        </section>
+
+        <section class="card">
+          <div class="card-h">
+            <h2>Co se stane bez nových kreativ</h2>
+            <div class="legend"><span><span class="ln"></span>S průběžným testováním</span><span><span class="ln d"></span>Bez obměny kreativ</span></div>
+          </div>
+          <p class="sub" id="fatSub"></p>
+          <div class="chart" id="chart"></div>
+          <p class="note">Ilustrační průběh (bez obměny +7 % týdně od 3. týdne). Až bude k dispozici, nahradíme ho skutečnými daty z účtů MAIRA.</p>
+        </section>
+
+        <section class="card">
+          <div class="card-h">
+            <h2>Plán na měsíc</h2>
+            <div class="legend"><span><i class="lv"></i>video</span><span><i class="ls"></i>statika</span></div>
+          </div>
+          <p class="sub">Každý blok je jedna testovací sada.</p>
+          <div class="weeks" id="weeks"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-h"><h2>Zadání do výroby</h2></div>
+          <p class="sub">Kreativy na tento měsíc s názvy podle jmenné konvence (datum_funnel_persona_formát_styl_angle_téma_varianta). Stačí zkopírovat do tabulky pro výrobu.</p>
+          <div class="brief-in">
+            <div class="field"><label for="themes">Témata a produkty (oddělte čárkou)</label><div class="in"><textarea id="themes" rows="2">novinka, doprava-zdarma, sleva-20-procent, bestseller</textarea></div></div>
+            <div class="field"><label for="persona">Persona</label><div class="in"><input id="persona" type="text" value="hlavni"></div></div>
+          </div>
+          <div class="btns">
+            <button type="button" class="btn primary" id="copyNames">Zkopírovat názvy</button>
+            <button type="button" class="btn" id="copyTsv">Zkopírovat jako tabulku</button>
+            <button type="button" class="btn" id="showAll" hidden></button>
+            <span class="toast" id="briefToast" role="status"></span>
+          </div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Týden</th><th>Sada</th><th>Formát</th><th>Název kreativy</th></tr></thead>
+            <tbody id="briefBody"></tbody>
+          </table></div>
+        </section>
+
+        <section class="card">
+          <div class="card-h">
+            <h2>Jak jsme k tomu došli</h2>
+            <div class="legend"><span><span class="src d" style="margin:0">z praxe</span> ověřené pravidlo</span><span><span class="src p" style="margin:0">návrh</span> k odsouhlasení</span></div>
+          </div>
+          <ol class="chain" id="chain"></ol>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NASTAVENÍ ============ -->
+  <section id="p-settings" role="tabpanel" aria-labelledby="tab-settings" hidden>
+    <form id="settingsForm" autocomplete="off" novalidate>
+      <div class="settings">
+        <section class="card">
+          <h2>Výpočet</h2>
+          <p class="sub" style="margin:0">Výchozí pravidla pro veřejnou kalkulačku i admin.</p>
+          <div class="pair">
+            <div class="field"><label for="s_testPct">Podíl na testování</label><div class="in"><input id="s_testPct" data-k="testPct" type="text" inputmode="numeric"><span class="u">%</span></div></div>
+            <div class="field"><label for="s_testDays">Délka testu</label><div class="in"><input id="s_testDays" data-k="testDays" type="text" inputmode="numeric"><span class="u">dní</span></div></div>
+            <div class="field"><label for="s_vid">Videí v sadě</label><div class="in"><input id="s_vid" data-k="videosPerSet" type="text" inputmode="numeric"><span class="u">ks</span></div></div>
+            <div class="field"><label for="s_stat">Statik v sadě</label><div class="in"><input id="s_stat" data-k="staticsPerSet" type="text" inputmode="numeric"><span class="u">ks</span></div></div>
+            <div class="field"><label for="s_win">Vítězů ze sady</label><div class="in"><input id="s_win" data-k="winnersPerSet" type="text" inputmode="numeric"><span class="u">ks</span></div></div>
+            <div class="field"><label for="s_life">Životnost vítěze</label><div class="in"><input id="s_life" data-k="winnerLifeWeeks" type="text" inputmode="numeric"><span class="u">týd.</span></div></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Ceník produkce</h2>
+          <p class="sub" style="margin:0">Cena za jeden kus. Veřejná část z ní počítá měsíční náklady.</p>
+          <div class="pair">
+            <div class="field"><label for="s_aiVideo">AI video</label><div class="in"><input id="s_aiVideo" data-price="aiVideo" type="text" inputmode="numeric"><span class="u">Kč</span></div></div>
+            <div class="field"><label for="s_classicVideo">Klasické video</label><div class="in"><input id="s_classicVideo" data-price="classicVideo" type="text" inputmode="numeric"><span class="u">Kč</span></div></div>
+            <div class="field"><label for="s_aiStatic">AI statika</label><div class="in"><input id="s_aiStatic" data-price="aiStatic" type="text" inputmode="numeric"><span class="u">Kč</span></div></div>
+            <div class="field"><label for="s_classicStatic">Klasická statika</label><div class="in"><input id="s_classicStatic" data-price="classicStatic" type="text" inputmode="numeric"><span class="u">Kč</span></div></div>
+          </div>
+          <label class="check" for="s_demo"><input id="s_demo" type="checkbox"><span>Ceny jsou orientační. Klient uvidí u nákladů štítek „Orientační ceny“.</span></label>
+        </section>
+
+        <section class="card" style="grid-column:1/-1">
+          <h2>Trhy</h2>
+          <p class="sub" style="margin:0">Minimální denní budget jedné testovací sady. Ověřené trhy mají v rozpisu výpočtu štítek „z praxe“, ostatní „návrh“.</p>
+          <div id="marketsBox" style="display:grid;gap:12px"></div>
+        </section>
+      </div>
+      <div class="savebar">
+        <button type="submit" class="btn primary" id="saveBtn">Uložit nastavení</button>
+        <span class="msg" id="saveMsg" role="status"></span>
+        <span class="hint" id="savedAt"></span>
+      </div>
+    </form>
+  </section>
+
+  <!-- ============ POPTÁVKY ============ -->
+  <section id="p-leads" role="tabpanel" aria-labelledby="tab-leads" hidden>
+    <div class="card-h" style="margin-bottom:16px">
+      <p class="sub" style="margin:0;color:var(--muted)">Odeslané formuláře „Chci kreativy“ z veřejné části. Když je nastavený Slack webhook, každá nová poptávka přijde i do Slacku.</p>
+      <div class="btns" style="margin:0">
+        <button type="button" class="btn" id="reloadLeads">Obnovit</button>
+        <a class="btn" href="/admin/leads.csv" style="text-decoration:none">Stáhnout CSV</a>
+      </div>
+    </div>
+    <div class="tbl-wrap"><table class="leads">
+      <thead><tr><th>Datum</th><th>Kontakt</th><th>Výpočet</th><th>Stav</th></tr></thead>
+      <tbody id="leadsBody"><tr><td colspan="4" class="empty-state">Načítám…</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <p class="foot">Pravidla označená „z praxe“ vychází z forecastingu u nejúspěšnějších klientů. Demo účty, graf únavy a ceny označené jako ukázkové je potřeba nahradit skutečnými daty.</p>
+</div>
+<script src="/assets/core.js"></script>
+<script src="/admin/admin.js"></script>
+</body>
+</html>
