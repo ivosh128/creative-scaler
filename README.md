@@ -9,6 +9,8 @@ Aplikace má dvě části:
 | **Veřejná** | `/` | klienti | kalkulačka, náklady AI vs. klasika, graf únavy kreativ, měsíční plán, poptávkový formulář, jazyky CZ/SK/EN |
 | **Admin** | `/admin` | tým | celá kalkulačka s předpoklady a rozpisem výpočtu, demo účty, generátor názvů kreativ do výroby, odkaz pro klienta, **nastavení** (ceník, pravidla, budgety trhů) a **poptávky** |
 
+Návod pro kolegy (bez technických detailů) je přímo v aplikaci na adrese **/READ_ME**.
+
 Co se v adminu uloží v Nastavení, veřejná část hned přebere. Interní věci (předpoklady, zadání do výroby, demo účty, poptávky) do veřejné části vůbec nechodí, ani ve zdrojovém kódu stránky.
 
 ## Hesla

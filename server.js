@@ -138,6 +138,7 @@ app.use('/assets', express.static(path.join(__dirname, 'public', 'assets'), { ma
 app.get('/healthz', (req, res) => res.json({ ok: true }));
 app.get('/', requirePublic, (req, res) => res.sendFile(path.join(VIEWS, 'public.html')));
 app.get('/admin', requireAdmin, (req, res) => res.sendFile(path.join(VIEWS, 'admin.html')));
+app.get(['/READ_ME', '/read_me', '/readme', '/READ-ME'], requireAdmin, (req, res) => res.sendFile(path.join(VIEWS, 'readme.html')));
 app.get('/admin/admin.js', requireAdmin, (req, res) => res.sendFile(path.join(PRIVATE, 'admin.js')));
 
 /* ---------- nastavení ---------- */

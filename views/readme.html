@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>READ ME · Creative Scaler</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#083027">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap">
+<link rel="stylesheet" href="/assets/styles.css">
+<style>
+  .doc{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:clamp(32px,5vw,80px);align-items:start;padding-bottom:var(--section)}
+  @media (max-width:900px){.doc{grid-template-columns:minmax(0,1fr)}.toc{position:static!important}}
+  .toc{position:sticky;top:24px;display:grid;gap:4px;border-left:2px solid var(--line);padding-left:18px}
+  .toc b{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--orange);margin-bottom:8px}
+  .toc a{font-size:16px;color:var(--muted);text-decoration:none;padding:3px 0}
+  .toc a:hover{color:var(--orange)}
+  .doc section{padding-top:24px;margin-bottom:clamp(48px,6vw,80px);scroll-margin-top:16px}
+  .doc h2{margin:6px 0 20px}
+  .doc h3{margin:28px 0 10px;font-size:22px}
+  .doc p,.doc li{font-size:18px;line-height:1.5;max-width:70ch;color:var(--fg)}
+  .doc p{margin:0 0 14px}
+  .doc ul,.doc ol{margin:0 0 16px;padding-left:22px;display:grid;gap:8px}
+  .doc .muted{color:var(--muted)}
+  .doc code{overflow-wrap:anywhere;word-break:break-word;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:15px;background:var(--teal-deep);padding:1px 6px}
+  .links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:8px 0 8px}
+  @media (max-width:700px){.links{grid-template-columns:minmax(0,1fr)}}
+  .links a{display:grid;gap:8px;padding:24px 26px;text-decoration:none;border:2px solid var(--line-strong);color:var(--white)}
+  .links a:first-child{background:var(--orange);border-color:var(--orange)}
+  .links a:hover{border-color:var(--orange)}
+  .links .k{font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .links .u{font-stretch:75%;font-weight:800;font-size:clamp(20px,2vw,26px);text-transform:uppercase;overflow-wrap:anywhere}
+  .links .d{font-size:16px;opacity:.85}
+  .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:12px 0}
+  @media (max-width:700px){.grid2{grid-template-columns:minmax(0,1fr)}}
+  .box{border:1px solid var(--line);background:var(--surface);padding:22px 24px}
+  .box h3{margin:0 0 8px;font-size:20px}
+  .box p{font-size:16px;margin:0}
+  .box .why{margin-top:10px;color:var(--muted)}
+  .tag{display:inline-block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:2px 7px;border:2px solid currentColor;margin-left:8px;vertical-align:3px;white-space:nowrap}
+  .tag.d{color:var(--good)} .tag.p{color:var(--warn)}
+  .todo li::marker{content:"☐  ";color:var(--orange)}
+  table.plain{margin:0}
+  .doc .tbl-wrap{margin:8px 0 16px}
+  @media (max-width:700px){table.plain{min-width:640px}}
+  .doc main{min-width:0}
+  table.plain td,table.plain th{white-space:normal;font-size:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site-head">
+    <a class="brand" href="/"><b>Creative Scaler</b><small>by MAIRA</small></a>
+    <nav class="nav" aria-label="Navigace">
+      <span class="pill">READ ME</span>
+      <a class="navlink" href="/">Veřejná část</a>
+      <a class="navlink" href="/admin">Admin</a>
+    </nav>
+  </header>
+
+  <section class="hero" style="grid-template-columns:minmax(0,1fr)">
+    <div class="hero-copy">
+      <div>
+        <span class="eyebrow-lg">Návod pro tým</span>
+        <h1>Jak funguje <em>Creative Scaler</em></h1>
+      </div>
+      <p class="lead" style="max-width:52ch">Kalkulačka, která klientovi na jeho vlastních číslech ukáže, kolik kreativ na Meta Ads opravdu potřebuje, kolik to stojí a co ho stojí, když je nemá. Na konci nabídne, že je MAIRA připraví, ideálně s AI.</p>
+    </div>
+  </section>
+
+  <div class="doc">
+    <nav class="toc" aria-label="Obsah">
+      <b>Obsah</b>
+      <a href="#odkazy">Dva odkazy</a>
+      <a href="#proc">Proč to vzniklo</a>
+      <a href="#vypocet">Jak se počítá</a>
+      <a href="#verejna">Veřejná část</a>
+      <a href="#admin">Admin</a>
+      <a href="#navic">Co jsme domysleli navíc</a>
+      <a href="#demo">Co je zatím demo</a>
+      <a href="#otazky">Otázky pro tým</a>
+      <a href="#tech">Technika</a>
+    </nav>
+
+    <main>
+      <section id="odkazy">
+        <span class="eyebrow-lg">Začněte tady</span>
+        <h2>Dva odkazy</h2>
+        <div class="links">
+          <a href="/"><span class="k">Pro klienta</span><span class="u">creative-scaler-production.up.railway.app</span><span class="d">Veřejná kalkulačka. Tu ukazujeme nebo posíláme klientovi.</span></a>
+          <a href="/admin"><span class="k">Pro tým</span><span class="u">… /admin</span><span class="d">Interní část: celý výpočet, nastavení, zadání do výroby a poptávky.</span></a>
+        </div>
+        <p class="muted">Obě části jsou teď kvůli demu bez hesla. Kdo zná adresu /admin, vidí i poptávky s kontakty a může měnit nastavení. Heslo se zapne jedním přepínačem v Railway (viz Technika).</p>
+      </section>
+
+      <section id="proc">
+        <span class="eyebrow-lg">Zadání</span>
+        <h2>Proč to vzniklo</h2>
+        <p>Vychází z tabulky „Doporučený počet kreativ“, kterou tým připravil pro jednoho z klientů, a z přednášky Markéty Paclíkové na PPC kempu. Cíl podle Andreje: appka, kterou ukážeme klientovi a na jeho číslech mu předvedeme, že potřebuje výrazně víc kreativ. A my mu je připravíme.</p>
+        <p>Na Meta Ads se kreativy postupně „okoukají“ a výkon klesá. Proto je potřeba pravidelně testovat nové varianty. Kalkulačka převádí tuhle zkušenost na konkrétní čísla a zároveň otevírá dveře k AI produkci videí, která pravidelné testování zlevňuje.</p>
+      </section>
+
+      <section id="vypocet">
+        <span class="eyebrow-lg">Logika</span>
+        <h2>Jak se počítá</h2>
+        <p>Štítek <span class="tag d">z praxe</span> značí pravidlo z původní tabulky od týmu, štítek <span class="tag p">návrh</span> předpoklad, který jsme doplnili a je potřeba ho odsouhlasit. Všechny hodnoty jdou změnit v adminu v záložce Nastavení.</p>
+        <ol class="chain">
+          <li><span class="lbl">Rozpočet na testování<span class="src d">z praxe</span></span><span class="val">30 %</span><span class="why">Z měsíčního spendu na Metě (bez katalogu) jde aspoň 30 % na testování nových reklam.</span></li>
+          <li><span class="lbl">Minimum na jednu sadu<span class="src d">z praxe</span></span><span class="val">30 000 Kč</span><span class="why">Sada = skupina reklam, které propagují jednu věc. Na českém trhu potřebuje aspoň 5 000 Kč denně po dobu 6 dní, jinak se nedá férově vyhodnotit. Ostatní trhy jsou zatím <b>návrh</b>.</span></li>
+          <li><span class="lbl">Počet sad<span class="src d">z praxe</span></span><span class="val">300k ÷ 30k = 10</span><span class="why">Rozpočet na testování dělený minimem sady, zaokrouhleno dolů. Případný zbytek se rozdělí mezi sady.</span></li>
+          <li><span class="lbl">Kreativy v sadě<span class="src d">z praxe</span></span><span class="val">3 + 2</span><span class="why">3 videa s různým hookem a 2 statiky, které se liší vizuálem i tématem, ne jen textem. Pět variant je minimum pro test.</span></li>
+          <li><span class="lbl">Nových kreativ měsíčně<span class="src d">z praxe</span></span><span class="val">50</span><span class="why">Počet sad × kreativy v sadě. Při 1 mil. Kč měsíčně: 30 videí a 20 statik.</span></li>
+          <li><span class="lbl">Živých kreativ v účtu<span class="src p">návrh</span></span><span class="val">19</span><span class="why">Kreativy, které právě běží v testu, plus vítězové. Předpoklad: z každé sady vyjde 1 vítěz, který běží zhruba 4 týdny, než se okouká.</span></li>
+          <li><span class="lbl">Týdenní kadence<span class="src p">návrh</span></span><span class="val">12 / týden</span><span class="why">Nové kreativy rozložené rovnoměrně do měsíce, aby účet nikdy nezůstal bez čerstvých variant.</span></li>
+        </ol>
+      </section>
+
+      <section id="verejna">
+        <span class="eyebrow-lg">Pro klienta</span>
+        <h2>Veřejná část: co je kde</h2>
+        <div class="tbl-wrap"><table class="plain">
+          <thead><tr><th>Sekce</th><th>Co ukazuje</th><th>Proč tam je</th></tr></thead>
+          <tbody>
+            <tr><td><b>Kalkulačka</b></td><td>Klient zadá rozpočet (měsíčně nebo denně, v CZK, EUR nebo USD), trh a volitelně CPA nebo počet konverzí, ROAS a kolik kreativ má dnes.</td><td>Čím víc vlastních čísel zadá, tím osobnější a přesvědčivější výsledek.</td></tr>
+            <tr><td><b>Výsledek</b></td><td>Nových kreativ měsíčně, živých v účtu, kolik týdně a kolik testovacích sad.</td><td>Hlavní číslo, kvůli kterému to celé je.</td></tr>
+            <tr><td><b>„Potřebujete X× víc“</b></td><td>Porovnání s tím, kolik kreativ klient přidává dnes.</td><td>Nejsilnější obchodní argument: klient na vlastních číslech vidí, jak moc zaostává.</td></tr>
+            <tr><td><b>Kolik to stojí</b></td><td>Měsíční cena výroby AI oproti klasické produkci a úspora. S ROAS i jako podíl z tržeb.</td><td>Odpovídá na první námitku „to bude drahé“ a vede k AI videím.</td></tr>
+            <tr><td><b>Co se stane bez nových kreativ</b></td><td>Graf, jak zdražuje konverze, když se kreativy neobměňují. Pod ním o kolik konverzí a tržeb klient za 12 týdnů přijde.</td><td>Ukazuje cenu nečinnosti. Ztracené tržby porovnává s cenou AI kreativ za stejné období.</td></tr>
+            <tr><td><b>Plán na měsíc</b></td><td>Dlaždice po týdnech: každý blok je jedna sada, oranžová/zelená = video, bílá = statika.</td><td>Objem je hned vidět, ne jen jako číslo.</td></tr>
+            <tr><td><b>Chci kreativy</b></td><td>Formulář s jménem, firmou a e-mailem.</td><td>Poptávka se uloží do adminu i s výpočtem klienta.</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section id="admin">
+        <span class="eyebrow-lg">Pro tým</span>
+        <h2>Admin: tři záložky</h2>
+        <div class="grid2">
+          <div class="box"><h3>Kalkulačka</h3><p>Totéž co klient vidí, plus demo účty, úprava předpokladů jen pro daný výpočet, rozpis výpočtu krok po kroku a zadání do výroby.</p></div>
+          <div class="box"><h3>Nastavení</h3><p>Pravidla výpočtu, strop sad, odhad únavy kreativ, kurzy měn, ceník produkce a minimální budgety trhů. Po uložení je veřejná část hned převezme.</p></div>
+          <div class="box"><h3>Poptávky</h3><p>Odeslané formuláře s výpočtem klienta. Jde je označit jako vyřízené a stáhnout do CSV. S nastaveným Slack webhookem chodí i do Slacku.</p></div>
+          <div class="box"><h3>Poslat klientovi</h3><p>Karta v Kalkulačce vytvoří odkaz na veřejnou část s čísly klienta, zvoleným jazykem a měnou. Přenese i upravené předpoklady, takže klient uvidí přesně totéž co vy.</p></div>
+        </div>
+        <h3>Zadání do výroby</h3>
+        <p>Z výsledku se vygeneruje seznam kreativ na měsíc, rozdělený po týdnech a sadách, s názvy podle jmenné konvence z přednášky Markéty Paclíkové: <code>datum_funnel_persona_formát_styl_angle_téma_varianta</code>. Stačí zadat témata klienta a zkopírovat tabulku do Google Sheets.</p>
+      </section>
+
+      <section id="navic">
+        <span class="eyebrow-lg">Nad rámec zadání</span>
+        <h2>Co jsme domysleli navíc a proč</h2>
+        <div class="grid2">
+          <div class="box"><h3>Strop sad u velkých rozpočtů</h3><p>Nad 20 sadami měsíčně se další sady nepřidávají, jen dostane každá víc peněz.</p><p class="why">Bez toho by 5 mil. Kč vedlo na 250 kreativ měsíčně, což klient vezme jako nesmysl.</p></div>
+          <div class="box"><h3>Malé rozpočty</h3><p>Když nestačí ani na jednu plnou sadu, kalkulačka doporučí 1 sadu (u velmi malých jen 3 kreativy) a řekne, od jaké částky test funguje naplno.</p><p class="why">Menší klient nedostane nulu, ale začátek spolupráce.</p></div>
+          <div class="box"><h3>Únava kreativ a ROAS</h3><p>Graf a výpočet ztracených konverzí a tržeb za 12 týdnů. Odhad zdražení (7 % týdně od 3. týdne) se nastavuje v adminu.</p><p class="why">Dává důvod jednat hned a ROAS díky němu má konkrétní smysl.</p></div>
+          <div class="box"><h3>CPA, nebo konverze</h3><p>Klient vyplní, co zná, druhé se dopočítá. Při změně rozpočtu zůstává CPA stejné.</p><p class="why">Andrej chtěl konverze jako vstup a ne každý klient zná CPA.</p></div>
+          <div class="box"><h3>Denní i měsíční spend</h3><p>Přepínač měsíčně / denně.</p><p class="why">Andrejův požadavek. Hodně klientů uvažuje v denním budgetu.</p></div>
+          <div class="box"><h3>Měny a jazyky</h3><p>CZK, EUR, USD a čeština, slovenština, angličtina. Počítá se v korunách, kurzy jsou v adminu.</p><p class="why">MAIRA má klienty na více trzích.</p></div>
+          <div class="box"><h3>Fáze učení jen interně</h3><p>Upozornění, že sada nenasbírá ~50 konverzí týdně, vidí jen admin.</p><p class="why">Klientovi by zpochybnilo vlastní doporučení.</p></div>
+          <div class="box"><h3>Trhy a „ověřeno“</h3><p>Každý trh má vlastní minimum sady. Neověřené trhy mají v rozpisu štítek návrh.</p><p class="why">Minimum 5 000 Kč denně platí pro Česko, jinde je jiná cena reklamy.</p></div>
+        </div>
+      </section>
+
+      <section id="demo">
+        <span class="eyebrow-lg">Před ostrým spuštěním</span>
+        <h2>Co je zatím demo</h2>
+        <ul class="todo">
+          <li><b>Ceník produkce</b> je ukázkový. Doplnit skutečné ceny v Nastavení a vypnout štítek „Orientační ceny“.</li>
+          <li><b>Odhad únavy kreativ</b> (7 % týdně od 3. týdne) nahradit daty z účtů MAIRA.</li>
+          <li><b>Minimální budgety trhů</b> mimo Česko ověřit a zaškrtnout „Ověřeno“.</li>
+          <li><b>Demo účty</b> v adminu jsou vymyšlené. Další krok: načítat spend, CPA, ROAS a počet reklam přímo z Meta účtu klienta.</li>
+          <li><b>Slack webhook</b> pro poptávky zatím není nastavený.</li>
+          <li><b>Písmo</b>: místo PP Neue Corp Compact (web MAIRA) se zatím zobrazuje podobné Archivo.</li>
+          <li><b>Hesla</b>: před ostrým provozem zapnout aspoň na admin.</li>
+          <li><b>Formulář</b>: před ostrým provozem doplnit souhlas se zpracováním osobních údajů a přesunout server do EU.</li>
+        </ul>
+      </section>
+
+      <section id="otazky">
+        <span class="eyebrow-lg">K odsouhlasení</span>
+        <h2>Otázky pro tým</h2>
+        <ol>
+          <li>Sedí předpoklad 1 vítěz ze sady, který běží ~4 týdny?</li>
+          <li>Je strop 20 sad měsíčně rozumný, nebo má být jiný?</li>
+          <li>Jaká je reálná míra únavy kreativ podle našich dat?</li>
+          <li>Jaké jsou minimální denní budgety sady pro SK, PL, HU, DE a AT?</li>
+          <li>Ukazovat klientovi i klasickou produkci, nebo jen AI?</li>
+          <li>Kdo bude poptávky z formuláře vyřizovat a kam mají chodit?</li>
+        </ol>
+      </section>
+
+      <section id="tech">
+        <span class="eyebrow-lg">Pro toho, kdo to bude spravovat</span>
+        <h2>Technika</h2>
+        <ul>
+          <li><b>Kód</b> je na GitHubu v repozitáři <code>ivosh128/creative-scaler</code>. Podrobný technický návod je v souboru README.md.</li>
+          <li><b>Běží na Railway</b> v projektu creative-scaler. Každá změna v GitHubu se sama nasadí zhruba do minuty.</li>
+          <li><b>Nastavení a poptávky</b> se ukládají na úložiště Railway, takže přežijí i nové nasazení.</li>
+          <li><b>Přístup</b> řídí proměnné v Railway: <code>ADMIN_OPEN=true</code> a <code>PUBLIC_OPEN=true</code> (teď bez hesla). Smazáním proměnné se zapne heslo z <code>ADMIN_PASSWORD</code> nebo <code>PUBLIC_PASSWORD</code>.</li>
+          <li><b>Vlastní adresa</b> <code>creativescaler.mairateam.com</code>: v Railway přidat doménu a správce DNS přidá jeden záznam CNAME.</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</div>
+<footer class="wrap site-foot"><p>Creative Scaler · MAIRA · verze 0.5</p><p><a class="navlink" href="/admin" style="font-size:15px">Zpět do adminu</a></p></footer>
+</body>
+</html>
