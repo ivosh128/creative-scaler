@@ -15,7 +15,7 @@ Co se v adminu uloží v Nastavení, veřejná část hned přebere. Interní v�
 
 - `ADMIN_PASSWORD` – vstup do adminu.
 - `PUBLIC_PASSWORD` – vstup do veřejné části. Dokud je nastavené, klient potřebuje heslo.
-- `PUBLIC_OPEN` – **až bude kalkulačka pro klienty hotová**, smažte `PUBLIC_PASSWORD` a nastavte `PUBLIC_OPEN=true`. Veřejná část se otevře bez hesla.
+- `PUBLIC_OPEN` – **až bude kalkulačka pro klienty hotová**, nastavte `PUBLIC_OPEN=true`. Veřejná část se otevře bez hesla (i když je `PUBLIC_PASSWORD` vyplněné).
 
 Když chybí heslo i `PUBLIC_OPEN`, veřejná část zůstane zavřená a pustí jen admina. Nic se tak neotevře omylem.
 

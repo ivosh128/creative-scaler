@@ -10,7 +10,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 const PUBLIC_PASSWORD = process.env.PUBLIC_PASSWORD || '';
 // Veřejná část je bez hesla otevřená jen tehdy, když to někdo výslovně zapne (PUBLIC_OPEN=true).
 // Bez hesla i bez PUBLIC_OPEN je zavřená a pustí jen admina – nic se tak neotevře omylem.
-const PUBLIC_OPEN = !PUBLIC_PASSWORD && String(process.env.PUBLIC_OPEN || '').toLowerCase() === 'true';
+const PUBLIC_OPEN = String(process.env.PUBLIC_OPEN || '').toLowerCase() === 'true'; // má přednost před PUBLIC_PASSWORD
 // Admin bez hesla jen po výslovném zapnutí (ADMIN_OPEN=true) – vhodné pro demo.
 const ADMIN_OPEN = String(process.env.ADMIN_OPEN || '').toLowerCase() === 'true';
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL || '';
