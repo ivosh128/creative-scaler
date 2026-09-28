@@ -19,6 +19,10 @@ Co se v adminu uloží v Nastavení, veřejná část hned přebere. Interní v�
 
 Když chybí heslo i `PUBLIC_OPEN`, veřejná část zůstane zavřená a pustí jen admina. Nic se tak neotevře omylem.
 
+- `ADMIN_OPEN` – nastavte `true`, aby admin fungoval bez hesla (jen pro demo). Pozor: kdo zná adresu `/admin`, uvidí poptávky i s kontakty a může měnit nastavení.
+
+**Demo teď běží bez hesel:** `PUBLIC_OPEN=true` a `ADMIN_OPEN=true`.
+
 Admin heslo otevře i veřejnou část. Změna hesla automaticky odhlásí všechny, kdo byli přihlášení starým heslem.
 
 ## Nasazení na Railway

@@ -235,6 +235,7 @@
   /* ---------- start ---------- */
   $('account').innerHTML = '<option value="">Ruční zadání</option>' + Object.entries(ACCOUNTS).map(([k, a]) => `<option value="${k}">${esc(a.name)}</option>`).join('');
   marketOptions($('market'));
+  fetch('/api/admin/mode').then(r => r.json()).then(m => { if (m.open) $('logoutLink').hidden = true; }).catch(() => {});
   api('/api/admin/config').then(c => {
     cfg = c; fillAssumptions(); fillSettings(); update(); loadLeads();
     const h = location.hash.slice(1); if (tabs.includes(h)) showTab(h);

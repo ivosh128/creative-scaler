@@ -11,11 +11,14 @@ const PUBLIC_PASSWORD = process.env.PUBLIC_PASSWORD || '';
 // Veřejná část je bez hesla otevřená jen tehdy, když to někdo výslovně zapne (PUBLIC_OPEN=true).
 // Bez hesla i bez PUBLIC_OPEN je zavřená a pustí jen admina – nic se tak neotevře omylem.
 const PUBLIC_OPEN = !PUBLIC_PASSWORD && String(process.env.PUBLIC_OPEN || '').toLowerCase() === 'true';
+// Admin bez hesla jen po výslovném zapnutí (ADMIN_OPEN=true) – vhodné pro demo.
+const ADMIN_OPEN = String(process.env.ADMIN_OPEN || '').toLowerCase() === 'true';
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL || '';
 let SESSION_SECRET = process.env.SESSION_SECRET || '';
 const SESSION_DAYS = 14;
 
-if (!ADMIN_PASSWORD) console.warn('[creative-scaler] ADMIN_PASSWORD není nastavené – admin je nedostupný.');
+if (ADMIN_OPEN) console.warn('[creative-scaler] Admin je otevřený bez hesla (ADMIN_OPEN=true).');
+else if (!ADMIN_PASSWORD) console.warn('[creative-scaler] ADMIN_PASSWORD není nastavené – admin je nedostupný.');
 if (!SESSION_SECRET) {
   // Bez SESSION_SECRET si server jednou vygeneruje náhodný klíč a uloží ho vedle dat,
   // takže přihlášení vydrží i restart a nikdo nemusí nic vymýšlet.
@@ -101,6 +104,7 @@ function requirePublic(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
+  if (ADMIN_OPEN) return next();
   if (ADMIN_PASSWORD && readRole(req) === 'admin') return next();
   if (wantsHtml(req)) return res.redirect('/login?admin=1&next=' + encodeURIComponent(req.originalUrl));
   res.status(401).json({ error: 'Jen pro admin.' });
@@ -109,7 +113,12 @@ function requireAdmin(req, res, next) {
 const VIEWS = path.join(__dirname, 'views');
 const PRIVATE = path.join(__dirname, 'private');
 
-app.get('/login', (req, res) => res.sendFile(path.join(VIEWS, 'login.html')));
+app.get('/login', (req, res) => {
+  // když není co hlídat, přihlášení přeskočíme
+  const next = safeNext(req.query.next);
+  if ((next.startsWith('/admin') && ADMIN_OPEN) || (!next.startsWith('/admin') && PUBLIC_OPEN)) return res.redirect(next);
+  res.sendFile(path.join(VIEWS, 'login.html'));
+});
 app.post('/login', (req, res) => {
   const ip = req.ip;
   const next = safeNext(req.body.next);
@@ -121,7 +130,8 @@ app.post('/login', (req, res) => {
   noteFail(ip);
   back('bad');
 });
-app.get('/logout', (req, res) => { res.clearCookie('cs_auth', { path: '/' }); res.redirect('/login'); });
+app.get('/logout', (req, res) => { res.clearCookie('cs_auth', { path: '/' }); res.redirect(ADMIN_OPEN ? '/' : '/login'); });
+app.get('/api/admin/mode', (req, res) => res.json({ open: ADMIN_OPEN }));
 
 /* ---------- stránky a soubory ---------- */
 app.use('/assets', express.static(path.join(__dirname, 'public', 'assets'), { maxAge: '1h' }));
