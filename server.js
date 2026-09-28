@@ -137,6 +137,7 @@ app.get('/api/config', requirePublic, (req, res) => {
   res.json({
     testPct: c.testPct, testDays: c.testDays, videosPerSet: c.videosPerSet, staticsPerSet: c.staticsPerSet,
     winnersPerSet: c.winnersPerSet, winnerLifeWeeks: c.winnerLifeWeeks,
+    maxSetsPerMonth: c.maxSetsPerMonth, fatigueWeeklyPct: c.fatigueWeeklyPct, fatigueStartWeek: c.fatigueStartWeek, rates: c.rates,
     markets: Object.fromEntries(Object.entries(c.markets).map(([k, v]) => [k, { daily: v.daily }])),
     prices: c.prices, pricesAreDemo: c.pricesAreDemo
   });
@@ -156,6 +157,10 @@ app.put('/api/admin/config', requireAdmin, (req, res) => {
     staticsPerSet: pick('staticsPerSet', 0, 20),
     winnersPerSet: pick('winnersPerSet', 0, 20),
     winnerLifeWeeks: pick('winnerLifeWeeks', 0, 52),
+    maxSetsPerMonth: pick('maxSetsPerMonth', 1, 200),
+    fatigueWeeklyPct: pick('fatigueWeeklyPct', 0, 50),
+    fatigueStartWeek: pick('fatigueStartWeek', 1, 12),
+    rates: { ...cur.rates },
     markets: { ...cur.markets },
     prices: { ...cur.prices },
     pricesAreDemo: typeof b.pricesAreDemo === 'boolean' ? b.pricesAreDemo : cur.pricesAreDemo
@@ -167,6 +172,10 @@ app.put('/api/admin/config', requireAdmin, (req, res) => {
   if (b.prices) for (const k of ['aiVideo', 'classicVideo', 'aiStatic', 'classicStatic']) {
     if (b.prices[k] === undefined) continue;
     if (!inRange(b.prices[k], 0, 1e7)) errors.push('prices.' + k); else next.prices[k] = b.prices[k];
+  }
+  if (b.rates) for (const k of ['EUR', 'USD']) {
+    if (b.rates[k] === undefined) continue;
+    if (!inRange(b.rates[k], 0.01, 1000)) errors.push('rates.' + k); else next.rates[k] = b.rates[k];
   }
   if (next.videosPerSet + next.staticsPerSet < 1) errors.push('perSet');
   if (errors.length) return res.status(400).json({ error: 'Neplatné hodnoty', fields: errors });
@@ -196,6 +205,7 @@ app.post('/api/leads', requirePublic, async (req, res) => {
     const v = Number(c[k]); if (isFinite(v)) lead.calc[k] = v;
   }
   if (typeof c.market === 'string' && /^[a-z]{2}$/.test(c.market)) lead.calc.market = c.market;
+  if (['CZK', 'EUR', 'USD'].includes(c.currency)) lead.calc.currency = c.currency;
   hits.push(now); leadHits.set(req.ip, hits);
   const list = store.getLeads(); list.unshift(lead); store.saveLeads(list);
   res.json({ ok: true });
@@ -221,8 +231,8 @@ app.patch('/api/admin/leads/:id', requireAdmin, (req, res) => {
 });
 app.get('/admin/leads.csv', requireAdmin, (req, res) => {
   const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const head = ['datum', 'stav', 'jmeno', 'firma', 'email', 'jazyk', 'trh', 'spend', 'cpa', 'roas', 'dnes_kreativ', 'doporuceno_kreativ', 'zivych_doporuceno', 'naklady_ai', 'naklady_klasika'];
-  const rows = store.getLeads().map(l => [l.createdAt, l.status, l.name, l.company, l.email, l.lang, l.calc.market, l.calc.spend, l.calc.cpa, l.calc.roas, l.calc.current, l.calc.newAds, l.calc.live, l.calc.costAi, l.calc.costClassic].map(q).join(','));
+  const head = ['datum', 'stav', 'jmeno', 'firma', 'email', 'jazyk', 'trh', 'spend', 'cpa', 'roas', 'dnes_kreativ', 'doporuceno_kreativ', 'zivych_doporuceno', 'naklady_ai', 'naklady_klasika', 'mena_klienta'];
+  const rows = store.getLeads().map(l => [l.createdAt, l.status, l.name, l.company, l.email, l.lang, l.calc.market, l.calc.spend, l.calc.cpa, l.calc.roas, l.calc.current, l.calc.newAds, l.calc.live, l.calc.costAi, l.calc.costClassic, l.calc.currency].map(q).join(','));
   res.set('Content-Type', 'text/csv; charset=utf-8');
   res.set('Content-Disposition', 'attachment; filename="creative-scaler-poptavky.csv"');
   res.send('﻿' + [head.join(','), ...rows].join('\n'));

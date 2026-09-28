@@ -49,6 +49,7 @@
     $('pct').value = fmtIn(cfg.testPct); $('daily').value = fmtIn(m.daily); $('days').value = fmtIn(cfg.testDays);
     $('vid').value = fmtIn(cfg.videosPerSet); $('stat').value = fmtIn(cfg.staticsPerSet);
     $('win').value = fmtIn(cfg.winnersPerSet); $('life').value = fmtIn(cfg.winnerLifeWeeks);
+    $('maxSets').value = fmtIn(cfg.maxSetsPerMonth);
   }
 
   function read() {
@@ -58,7 +59,8 @@
       vid: Math.max(0, Math.round(num($('vid').value))), stat: Math.max(0, Math.round(num($('stat').value))),
       win: Math.max(0, num($('win').value)), life: Math.max(0, num($('life').value)),
       cpa: num($('cpa').value), roas: num($('roas').value), current: num($('current').value), liveNow: num($('liveNow').value),
-      useCpa: $('useCpa').checked, prices: cfg.prices
+      useCpa: $('useCpa').checked, prices: cfg.prices,
+      maxSets: Math.max(1, num($('maxSets').value) || cfg.maxSetsPerMonth), fatigue: { pct: cfg.fatigueWeeklyPct, start: cfg.fatigueStartWeek }
     };
   }
 
@@ -66,6 +68,7 @@
     if (!cfg) return;
     last = calc(read());
     render(last, {
+      internal: true,
       cpaHint: ' Zvažte navýšení budgetu sady podle CPA.',
       dailyHint: R => `≈ ${kc(R.S.spend / CS.DPM)} denně, z toho ${kc(R.testBudget / CS.DPM)} na testování`
     });
@@ -79,9 +82,12 @@
     const rows = [
       ['Měsíční spend bez katalogu', kc(S.spend), 'Vstup od klienta.', null],
       ['Rozpočet na testování', kc(R.testBudget), `${fmt(S.pct * 100)} % spendu jde na testování nových reklam, jinak výkon postupně padá únavou kreativ.`, 'd'],
-      ['Budget na jednu sadu', kc(R.setBudget), R.cpaRaised ? `Navýšeno podle CPA: ${kc(S.cpa)} × 50 konverzí týdně × ${fmt(S.days)} dní testu.` : `${kc(S.daily)} denně × ${fmt(S.days)} dní. Minimum pro relevantní vyhodnocení na trhu ${t('m_' + S.market)}.`, (R.cpaRaised || !verified) ? 'p' : 'd'],
-      ['Testovacích sad měsíčně', fmt(R.sets), 'Rozpočet na testování dělený budgetem sady, zaokrouhleno dolů.', 'd'],
-      ['Kreativ v sadě', `${R.perSet} (${S.vid} + ${S.stat})`, `${S.vid}× video s různým hookem nebo verzí, ${S.stat}× statika, která se liší vizuálem i tématem, ne jen textem.`, 'd'],
+      ['Minimální budget sady', kc(R.minSet), R.cpaRaised ? `Navýšeno podle CPA: ${kc(S.cpa)} × 50 konverzí týdně × ${fmt(S.days)} dní testu.` : `${kc(S.daily)} denně × ${fmt(S.days)} dní. Minimum pro relevantní vyhodnocení na trhu ${t('m_' + S.market)}.`, (R.cpaRaised || !verified) ? 'p' : 'd'],
+      ['Testovacích sad měsíčně', fmt(R.sets),
+        R.mode === 'small' ? `Rozpočet nestačí ani na jednu plnou sadu (minimum ${kc(R.minSet)}), proto doporučujeme 1 sadu s nižším denním budgetem ${kc(R.setDaily)}${R.mini ? ' a menším počtem kreativ' : ''}.`
+        : R.mode === 'capped' ? `Rozpočet by stačil na víc sad, ale strop je ${fmt(R.maxSets)} měsíčně. Každá sada proto dostane ${kc(R.setBudget)} (${kc(R.setDaily)} denně).`
+        : 'Rozpočet na testování dělený minimálním budgetem sady, zaokrouhleno dolů. Zbytek se rozdělí mezi sady.', R.mode === 'normal' ? 'd' : 'p'],
+      ['Kreativ v sadě', `${R.perSet} (${S.vid} + ${S.stat})`, `${S.vid}× video s různým hookem nebo verzí, ${R.stat}× statika, která se liší vizuálem i tématem, ne jen textem.`, 'd'],
       ['Nových kreativ měsíčně', fmt(R.newAds), 'Počet sad krát kreativy v sadě.', 'd'],
       ['Týdenní kadence', `${fmt(Math.round(R.perWeek))} / týden`, 'Nové kreativy rozložené rovnoměrně do měsíce.', 'p'],
       ['Živých kreativ v účtu', fmt(R.live), `Zhruba ${fmt(R.liveTest)} právě v testu (souběžně běží ${fmt(R.concurrent, 1)} sady) a ${fmt(R.liveWin)} vítězů, z nichž každý jede asi ${fmt(S.life)} týdny, než se unaví.`, 'p']
@@ -118,13 +124,25 @@
     if (R.sets > BRIEF_PREVIEW) { sa.hidden = false; sa.textContent = briefAll ? 'Zobrazit méně' : `Zobrazit všech ${R.sets} sad`; } else sa.hidden = true;
   }
 
-  function shareUrl() {
-    const p = new URLSearchParams();
+  // předpoklady, které se v tomto výpočtu liší od nastavení, jdou do odkazu, aby klient viděl stejná čísla
+  const OVERRIDE_FIELDS = [['pct', 'testPct', 'podíl na testování'], ['days', 'testDays', 'délka testu'], ['vid', 'videosPerSet', 'videí v sadě'], ['stat', 'staticsPerSet', 'statik v sadě'], ['win', 'winnersPerSet', 'vítězů ze sady'], ['life', 'winnerLifeWeeks', 'životnost vítěze'], ['maxSets', 'maxSetsPerMonth', 'max. sad']];
+  function shareParams() {
+    const p = new URLSearchParams(), diff = [];
     SHARE_KEYS.forEach(k => { const v = $(k).value; if (String(v).trim() !== '') p.set(k, k === 'market' ? v : String(num(v))); });
-    p.set('lang', $('shareLang').value);
-    return location.origin + '/?' + p.toString();
+    OVERRIDE_FIELDS.forEach(([id, key, label]) => { const v = num($(id).value); if (v !== Number(cfg[key])) { p.set(id, String(v)); diff.push(label); } });
+    const mDaily = (cfg.markets[$('market').value] || cfg.markets.cz).daily;
+    if (num($('daily').value) !== mDaily) { p.set('daily', String(num($('daily').value))); diff.push('denní budget sady'); }
+    if ($('useCpa').checked && num($('cpa').value) > 0) { p.set('cpa50', '1'); diff.push('navýšení podle CPA'); }
+    p.set('lang', $('shareLang').value); p.set('cur', $('shareCur').value);
+    return { url: location.origin + '/?' + p.toString(), diff };
   }
-  function renderShare() { const u = shareUrl(); $('shareUrl').textContent = u; $('openShare').href = u; }
+  const shareUrl = () => shareParams().url;
+  function renderShare() {
+    const { url, diff } = shareParams();
+    $('shareUrl').textContent = url; $('openShare').href = url;
+    $('shareDiff').hidden = !diff.length;
+    $('shareDiff').textContent = diff.length ? 'Odkaz přenáší i upravené předpoklady: ' + diff.join(', ') + '.' : '';
+  }
 
   document.querySelectorAll('#f .in input').forEach(el => {
     el.addEventListener('input', () => { if (el.id === 'spend') $('spendR').value = num(el.value); update(); });
@@ -150,7 +168,8 @@
   $('showAll').addEventListener('click', () => { briefAll = !briefAll; renderBrief(last); });
   $('copyNames').addEventListener('click', () => copy(briefRows(last).map(r => r.name).join('\n'), $('briefToast')));
   $('copyTsv').addEventListener('click', () => copy(['Týden\tSada\tFormát\tNázev kreativy'].concat(briefRows(last).map(r => [r.w, r.s, r.f, r.name].join('\t'))).join('\n'), $('briefToast')));
-  $('shareLang').addEventListener('change', renderShare);
+  $('shareLang').addEventListener('change', () => { $('shareCur').value = $('shareLang').value === 'cs' ? 'CZK' : 'EUR'; renderShare(); });
+  $('shareCur').addEventListener('change', renderShare);
   $('copyShare').addEventListener('click', () => copy(shareUrl(), $('shareToast')));
 
   /* ---------- nastavení ---------- */
@@ -158,6 +177,7 @@
     document.querySelectorAll('#settingsForm [data-k]').forEach(el => { el.value = fmtIn(cfg[el.dataset.k], 2); });
     document.querySelectorAll('#settingsForm [data-price]').forEach(el => { el.value = fmtIn(cfg.prices[el.dataset.price]); });
     $('s_demo').checked = !!cfg.pricesAreDemo;
+    document.querySelectorAll('#settingsForm [data-rate]').forEach(el => { el.value = fmtIn(cfg.rates[el.dataset.rate], 3); });
     $('marketsBox').innerHTML = CS.MARKET_KEYS.map(k => {
       const m = cfg.markets[k] || { daily: 5000, verified: false };
       return `<div class="mkt"><span class="nm">${esc(t('m_' + k))}</span>
@@ -172,6 +192,7 @@
     const body = { prices: {}, markets: {}, pricesAreDemo: $('s_demo').checked };
     document.querySelectorAll('#settingsForm [data-k]').forEach(el => { body[el.dataset.k] = num(el.value); });
     document.querySelectorAll('#settingsForm [data-price]').forEach(el => { body.prices[el.dataset.price] = num(el.value); });
+    body.rates = {}; document.querySelectorAll('#settingsForm [data-rate]').forEach(el => { body.rates[el.dataset.rate] = num(el.value); });
     document.querySelectorAll('#settingsForm [data-m]').forEach(el => { body.markets[el.dataset.m] = { daily: num(el.value), verified: $('mv_' + el.dataset.m).checked }; });
     const msg = $('saveMsg'); $('saveBtn').disabled = true;
     try {

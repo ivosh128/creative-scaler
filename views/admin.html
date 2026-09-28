@@ -75,6 +75,7 @@
               <div class="field"><label for="stat">Statik v sadě</label><div class="in"><input id="stat" type="text" inputmode="numeric"><span class="u">ks</span></div></div>
               <div class="field"><label for="win">Vítězů ze sady</label><div class="in"><input id="win" type="text" inputmode="numeric"><span class="u">ks</span></div></div>
               <div class="field"><label for="life">Životnost vítěze</label><div class="in"><input id="life" type="text" inputmode="numeric"><span class="u">týd.</span></div></div>
+              <div class="field"><label for="maxSets">Max. sad měsíčně</label><div class="in"><input id="maxSets" type="text" inputmode="numeric"><span class="u">ks</span></div></div>
             </div>
             <span class="hint">Změny tady platí jen pro tento výpočet. Výchozí hodnoty pro všechny se mění v záložce Nastavení.</span>
             <button type="button" class="btn" id="resetAssump">Vrátit výchozí hodnoty</button>
@@ -107,10 +108,12 @@
 
         <section class="card">
           <div class="card-h"><h2>Poslat klientovi</h2></div>
-          <p class="sub">Odkaz otevře veřejnou kalkulačku s čísly z tohoto výpočtu. Dokud je veřejná část pod heslem, pošlete klientovi i heslo.</p>
-          <div class="pair" style="margin-bottom:12px;max-width:360px">
+          <p class="sub">Odkaz otevře veřejnou kalkulačku se stejnými čísly i předpoklady jako tento výpočet, takže klient uvidí přesně to, co vy. Dokud je veřejná část pod heslem, pošlete klientovi i heslo.</p>
+          <div class="pair" style="margin-bottom:18px;max-width:440px">
             <div class="field"><label for="shareLang">Jazyk pro klienta</label><div class="in"><select id="shareLang"><option value="cs">Čeština</option><option value="sk">Slovenčina</option><option value="en">English</option></select></div></div>
+            <div class="field"><label for="shareCur">Měna pro klienta</label><div class="in"><select id="shareCur"><option value="CZK">CZK</option><option value="EUR">EUR</option><option value="USD">USD</option></select></div></div>
           </div>
+          <p class="hint" id="shareDiff" hidden style="margin:0 0 12px"></p>
           <div class="share-row">
             <div class="share-url" id="shareUrl"></div>
             <button type="button" class="btn primary" id="copyShare">Zkopírovat odkaz</button>
@@ -137,9 +140,11 @@
             <h2>Co se stane bez nových kreativ</h2>
             <div class="legend"><span><span class="ln"></span>S průběžným testováním</span><span><span class="ln d"></span>Bez obměny kreativ</span></div>
           </div>
-          <p class="sub" id="fatSub"></p>
+          <p class="sub">Kolik by klienta stála únava kreativ bez průběžného testování. Křivka se řídí nastavením v záložce Nastavení.</p>
           <div class="chart" id="chart"></div>
-          <p class="note">Ilustrační průběh (bez obměny +7 % týdně od 3. týdne). Až bude k dispozici, nahradíme ho skutečnými daty z účtů MAIRA.</p>
+          <p class="save" id="fatOut"></p>
+          <p class="note" id="fatHint" hidden>Vyplňte ROAS a uvidíte, kolik tržeb by únava kreativ stála.</p>
+          <p class="note" id="fatNote"></p>
         </section>
 
         <section class="card">
@@ -195,6 +200,27 @@
             <div class="field"><label for="s_stat">Statik v sadě</label><div class="in"><input id="s_stat" data-k="staticsPerSet" type="text" inputmode="numeric"><span class="u">ks</span></div></div>
             <div class="field"><label for="s_win">Vítězů ze sady</label><div class="in"><input id="s_win" data-k="winnersPerSet" type="text" inputmode="numeric"><span class="u">ks</span></div></div>
             <div class="field"><label for="s_life">Životnost vítěze</label><div class="in"><input id="s_life" data-k="winnerLifeWeeks" type="text" inputmode="numeric"><span class="u">týd.</span></div></div>
+            <div class="field"><label for="s_maxSets">Max. sad měsíčně</label><div class="in"><input id="s_maxSets" data-k="maxSetsPerMonth" type="text" inputmode="numeric"><span class="u">ks</span></div></div>
+          </div>
+          <span class="hint">Nad tímto počtem se už nepřidávají další sady, ale každá dostane větší budget. Brání nesmyslně vysokým číslům u velkých rozpočtů.</span>
+        </section>
+
+        <section class="card">
+          <h2>Únava kreativ</h2>
+          <p class="sub" style="margin:0">Podle tohoto odhadu se kreslí graf a počítá, o kolik konverzí a tržeb klient bez obměny přijde.</p>
+          <div class="pair">
+            <div class="field"><label for="s_fatPct">Zdražení konverze</label><div class="in"><input id="s_fatPct" data-k="fatigueWeeklyPct" type="text" inputmode="decimal"><span class="u">% týdně</span></div></div>
+            <div class="field"><label for="s_fatStart">Začíná od</label><div class="in"><input id="s_fatStart" data-k="fatigueStartWeek" type="text" inputmode="numeric"><span class="u">. týdne</span></div></div>
+          </div>
+          <span class="hint">Až budou k dispozici data z účtů MAIRA, stačí sem dát skutečné hodnoty.</span>
+        </section>
+
+        <section class="card">
+          <h2>Kurzy měn</h2>
+          <p class="sub" style="margin:0">Všechno se počítá v korunách. Kurz slouží k převodu, když si klient přepne měnu na EUR nebo USD.</p>
+          <div class="pair">
+            <div class="field"><label for="s_eur">1 EUR</label><div class="in"><input id="s_eur" data-rate="EUR" type="text" inputmode="decimal"><span class="u">Kč</span></div></div>
+            <div class="field"><label for="s_usd">1 USD</label><div class="in"><input id="s_usd" data-rate="USD" type="text" inputmode="decimal"><span class="u">Kč</span></div></div>
           </div>
         </section>
 

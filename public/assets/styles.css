@@ -121,6 +121,9 @@ h1 em,h2 em{font-style:normal;color:var(--accent)}
 .seg button:hover{color:var(--orange)}
 .seg button[aria-pressed="true"]{background:var(--orange);color:var(--white)}
 .seg.full{display:grid;width:100%}
+.seg-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:10px}
+@media (max-width:380px){.seg-row{grid-template-columns:minmax(0,1fr)}}
+.seg-row .seg button{font-size:16px;padding:8px 4px}
 
 /* pole ve stylu formuláře MAIRA: popisek sedí v rámečku */
 .field{display:grid;gap:0;min-width:0;position:relative}

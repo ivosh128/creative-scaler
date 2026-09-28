@@ -13,6 +13,10 @@ const DEFAULT_CONFIG = {
   staticsPerSet: 2,
   winnersPerSet: 1,
   winnerLifeWeeks: 4,
+  maxSetsPerMonth: 20,
+  fatigueWeeklyPct: 7,
+  fatigueStartWeek: 3,
+  rates: { EUR: 24.35, USD: 21.36 },
   markets: {
     cz: { daily: 5000, verified: true },
     sk: { daily: 3500, verified: false },
@@ -45,7 +49,8 @@ function getConfig() {
     ...DEFAULT_CONFIG,
     ...saved,
     markets: { ...DEFAULT_CONFIG.markets, ...(saved.markets || {}) },
-    prices: { ...DEFAULT_CONFIG.prices, ...(saved.prices || {}) }
+    prices: { ...DEFAULT_CONFIG.prices, ...(saved.prices || {}) },
+    rates: { ...DEFAULT_CONFIG.rates, ...(saved.rates || {}) }
   };
 }
 

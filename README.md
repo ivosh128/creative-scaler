@@ -66,12 +66,18 @@ Otevřete http://localhost:3000 (heslo `demo`) a http://localhost:3000/admin (he
 ## Jak výpočet funguje
 
 1. Z měsíčního spendu jde výchozích 30 % na testování.
-2. Jedna testovací sada potřebuje denní budget trhu × délka testu (CZ: 5 000 Kč × 6 dní = 30 000 Kč).
-3. Počet sad = rozpočet na testování ÷ budget sady, zaokrouhleno dolů.
-4. Každá sada má 5 kreativ: 3 videa s různým hookem a 2 odlišné statiky.
-5. Živé kreativy = kreativy v právě běžících testech + vítězové (1 ze sady, běží ~4 týdny).
+2. Jedna testovací sada potřebuje minimálně denní budget trhu × délka testu (CZ: 5 000 Kč × 6 dní = 30 000 Kč). Volitelně se minimum zvedne podle CPA, aby sada nasbírala ~50 konverzí týdně.
+3. Počet sad = rozpočet na testování ÷ minimum sady, zaokrouhleno dolů. Celý rozpočet na testování se pak rozdělí mezi sady.
+4. **Velký rozpočet:** nad stropem sad (výchozí 20 měsíčně) se už další sady nepřidávají, ale každá dostane víc peněz.
+5. **Malý rozpočet:** když nestačí ani na jednu plnou sadu, doporučí se 1 sada s nižším denním budgetem. Pod polovinou minima má menší složení (2 videa + 1 statika).
+6. Každá sada má 5 kreativ: 3 videa s různým hookem a 2 odlišné statiky.
+7. Živé kreativy = kreativy v právě běžících testech + vítězové (1 ze sady, běží ~4 týdny).
+8. **Únava kreativ:** bez obměny zdražuje konverze o 7 % týdně od 3. týdne. Z toho se počítá, o kolik konverzí a (s ROAS) o kolik tržeb klient za 12 týdnů přijde, v porovnání s cenou AI kreativ za stejné období.
+9. **ROAS** kromě toho ukazuje náklady na kreativy jako podíl z tržeb, ne jen z mediálního rozpočtu.
 
-Hodnoty z bodů 1, 2, 4 a 5 jdou změnit v adminu v Nastavení.
+Klient může zadat CPA, nebo počet konverzí (druhé se dopočítá), spend měsíčně i denně a měnu CZK, EUR nebo USD. Vše se počítá v Kč, kurzy se nastavují v adminu.
+
+Všechny hodnoty z bodů 1, 2, 4, 6, 7, 8 i ceník a kurzy jdou změnit v adminu v Nastavení. Odkaz pro klienta z adminu přenáší i předpoklady upravené jen pro daný výpočet, takže klient vidí stejná čísla.
 
 ## Struktura
 

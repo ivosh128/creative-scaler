@@ -51,16 +51,22 @@
       <form class="controls on-light" id="f" autocomplete="off">
         <div class="group">
           <p class="eyebrow" data-i18n="spend_eyebrow"></p>
-          <div class="seg full" role="group" aria-label="Rozpočet">
-            <button type="button" data-p="200000">200k</button>
-            <button type="button" data-p="500000">500k</button>
-            <button type="button" data-p="1000000">1M</button>
-            <button type="button" data-p="3000000">3M</button>
+          <div class="seg-row">
+            <div class="seg full" role="group" aria-label="Měna" id="curSeg">
+              <button type="button" data-cur="CZK">CZK</button>
+              <button type="button" data-cur="EUR">EUR</button>
+              <button type="button" data-cur="USD">USD</button>
+            </div>
+            <div class="seg full" role="group" aria-label="Období" id="modeSeg">
+              <button type="button" data-mode="month" data-i18n="mode_month"></button>
+              <button type="button" data-mode="day" data-i18n="mode_day"></button>
+            </div>
           </div>
+          <div class="seg full" role="group" aria-label="Rychlá volba rozpočtu" id="presetSeg"></div>
           <div class="field">
-            <label for="spend" data-i18n="spend_label"></label>
-            <div class="in"><input id="spend" type="text" inputmode="numeric" value="1 000 000"><span class="u" data-i18n="u_month"></span></div>
-            <input id="spendR" type="range" min="50000" max="5000000" step="50000" value="1000000" aria-label="Spend">
+            <label for="spend" id="spendLabel" data-i18n="spend_label"></label>
+            <div class="in"><input id="spend" type="text" inputmode="numeric"><span class="u" id="spendUnit"></span></div>
+            <input id="spendR" type="range" min="10000" max="5000000" step="10000" value="1000000" aria-label="Spend">
             <span class="hint" id="dailyHint"></span>
           </div>
           <div class="field">
@@ -71,9 +77,11 @@
         <div class="group">
           <p class="eyebrow" data-i18n="perf_eyebrow"></p>
           <div class="pair">
-            <div class="field"><label for="cpa">CPA</label><div class="in"><input id="cpa" type="text" inputmode="decimal" placeholder="450"><span class="u">Kč</span></div></div>
-            <div class="field"><label for="roas">ROAS</label><div class="in"><input id="roas" type="text" inputmode="decimal" placeholder="5"><span class="u">×</span></div></div>
+            <div class="field"><label for="cpa">CPA</label><div class="in"><input id="cpa" type="text" inputmode="decimal"><span class="u cur-sym"></span></div></div>
+            <div class="field"><label for="conv" data-i18n="conv"></label><div class="in"><input id="conv" type="text" inputmode="numeric"></div></div>
           </div>
+          <span class="hint" data-i18n="conv_hint" style="margin-top:-8px"></span>
+          <div class="field"><label for="roas">ROAS</label><div class="in"><input id="roas" type="text" inputmode="decimal" placeholder="5"><span class="u">×</span></div></div>
           <div class="field"><label for="current" data-i18n="current"></label><div class="in"><input id="current" type="text" inputmode="numeric" placeholder="8"><span class="u" data-i18n="u_pcs_m"></span></div></div>
           <div class="field"><label for="liveNow" data-i18n="liveNow"></label><div class="in"><input id="liveNow" type="text" inputmode="numeric" placeholder="12"><span class="u" data-i18n="u_pcs"></span></div></div>
         </div>
@@ -135,12 +143,14 @@
       <div>
         <span class="eyebrow-lg" data-i18n="fat_eyebrow"></span>
         <h2 data-i18n="fat_h"></h2>
-        <p class="sub" id="fatSub"></p>
+        <p class="sub" data-i18n="fat_sub"></p>
       </div>
       <div class="legend"><span><span class="ln"></span><span data-i18n="fat_with"></span></span><span><span class="ln d"></span><span data-i18n="fat_without"></span></span></div>
     </div>
     <div class="chart" id="chart"></div>
-    <p class="note" data-i18n="fat_note"></p>
+    <p class="save" id="fatOut"></p>
+    <p class="note" id="fatHint" data-i18n="fat_roas_hint" hidden></p>
+    <p class="note" id="fatNote"></p>
   </div>
 </section>
 
