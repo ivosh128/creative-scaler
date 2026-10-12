@@ -6,7 +6,7 @@ window.CS = (function () {
   const MARKET_KEYS = ['cz', 'sk', 'pl', 'hu', 'de', 'at'];
   const CURRENCIES = ['CZK', 'EUR', 'USD'];
   // rychlé volby rozpočtu v „kulatých“ částkách dané měny
-  const PRESETS = { CZK: [100000, 500000, 1000000, 3000000], EUR: [5000, 20000, 50000, 120000], USD: [5000, 20000, 50000, 120000] };
+  const PRESETS = { CZK: [30000, 100000, 300000, 1000000, 3000000], EUR: [1500, 5000, 15000, 50000, 120000], USD: [1500, 5000, 15000, 50000, 120000] };
 
   const I = {
     cs: {
@@ -24,8 +24,8 @@ window.CS = (function () {
       big_k: 'Nových kreativ každý měsíc', videos: 'videí', statics: 'statik', per_year: 'za rok',
       kpi_live: 'Živých v účtu', kpi_live_s: 'doporučeno současně, testy i vítězové', kpi_week: 'Každý týden', kpi_sets: 'Testovacích sad',
       live_now: 'dnes {n}',
-      new_s: '{sets} po {per} kreativách. Tolik jich účet potřebuje, aby {p} % rozpočtu šlo do testování nových variant.',
-      new_small: 'S tímto rozpočtem doporučujeme začít jednou testovací sadou měsíčně s {per} kreativami.',
+      new_s: '{sets} po {per} kreativách. Počet roste s rozpočtem: čím víc peněz běží, tím rychleji se reklamy okoukají.',
+      new_small: 'Při tomto rozpočtu stačí {n} s {per} kreativami měsíčně.',
       new_none: 'Zadejte rozpočet a hned uvidíte doporučení.',
       set_forms: ['testovací sada', 'testovací sady', 'testovacích sad'],
       week_s: 'nových kreativ, zhruba {n} sady týdně', week_s0: 'nových kreativ', sets_s: 'měsíčně, každá za {b}', sets_s0: 'měsíčně',
@@ -39,26 +39,46 @@ window.CS = (function () {
       al_roas: 'Při ROAS {r} odpovídá tento spend tržbám z Mety kolem {t} měsíčně.',
       al_live: 'V účtu dnes běží {a} reklam, doporučeno je {b}.',
       cost_eyebrow: 'Náklady na výrobu', cost_h: 'Kolik to stojí', prices_demo: 'Orientační ceny',
-      cost_sub: 'Měsíční výroba doporučeného objemu kreativ. Díky AI produkci je pravidelné testování dostupné i pro menší rozpočty.',
+      cost_sub: 'Měsíční výroba doporučeného objemu kreativ s AI.',
       cost_ai: 'AI produkce', cost_cl: 'Klasická produkce', of_spend: '{p} % mediálního rozpočtu', of_rev: '{p} % tržeb z Mety',
       save: 'S AI produkcí ušetříte <b>{s}</b> měsíčně, tedy {p} % nákladů na výrobu.',
-      fat_eyebrow: 'Únava kreativ', fat_h: 'Co se stane bez nových kreativ', fat_with: 'S průběžným testováním', fat_without: 'Bez obměny kreativ',
-      fat_sub: 'Když se kreativy neobměňují, publikum je okouká a každá konverze postupně zdražuje. Takhle by to vypadalo u vašeho rozpočtu během 12 týdnů.',
+      fat_eyebrow: 'Únava kreativ', fat_h: 'Co se stane bez nových kreativ', fat_with: 'S doporučeným testováním', fat_without: 'Bez obměny kreativ',
+      fat_sub: 'Když se kreativy neobměňují dost často, publikum je okouká a každá konverze postupně zdražuje. Ani průběžné testování únavu úplně nezastaví, ale výrazně ji zpomalí. Takhle by to vypadalo u vašeho rozpočtu během 12 týdnů.',
       fat_y_cpa: 'Cena za konverzi', fat_y_idx: 'Cena za konverzi (start = 100)',
-      fat_loss_conv: 'Bez obměny byste za 12 týdnů za stejné peníze dostali o ~{n} konverzí méně ({p} %).',
-      fat_loss_pct: 'Bez obměny byste za 12 týdnů za stejné peníze dostali o ~{p} % méně konverzí.',
-      fat_loss_rev: 'To je zhruba <b>{r}</b> ztracených tržeb. AI kreativy na stejné období stojí {a}.',
+      fat_loss_conv: 'Oproti doporučenému testování byste za 12 týdnů za stejné peníze dostali o ~{n} konverzí méně ({p} %).',
+      fat_loss_pct: 'Oproti doporučenému testování byste za 12 týdnů za stejné peníze dostali o ~{p} % méně konverzí.',
+      fat_loss_rev: 'To je zhruba <b>{r}</b> ušlých tržeb. AI kreativy na stejné období stojí {a}.',
       fat_roas_hint: 'Vyplňte ROAS a uvidíte, kolik tržeb by únava kreativ stála.',
-      fat_note: 'Odhad: bez obměny roste cena za konverzi o {f} % týdně od {w}. týdne, s průběžným testováním zůstává stabilní.',
+      fat_note: 'Odhad: bez obměny roste cena za konverzi o {f} % týdně od {w}. týdne. Doporučený objem nových kreativ tento růst tlumí zhruba o {e} %.',
       week: 'Týden', wk: 'T',
       plan_eyebrow: 'Rytmus testování', plan_h: 'Plán na měsíc', video: 'video', static: 'statika',
       plan_sub: 'Každý blok je jedna testovací sada. Nové sady se spouští průběžně, aby účet nikdy nezůstal bez čerstvých kreativ.',
       cta_eyebrow: 'Další krok', cta_h: 'Připravíme vám je',
-      cta_sub: '{n} kreativ měsíčně zvládneme vyrobit s AI rychle a za zlomek ceny klasické produkce. Nechte nám kontakt a ozveme se s návrhem.',
+      cta_sub: '{n} kreativ měsíčně vyrobíme s AI rychle a v kvalitě, jakou vidíte v ukázkách. Nechte nám kontakt a ozveme se s návrhem.',
       f_name: 'Jméno', f_company: 'Firma', f_email: 'E-mail', f_send: 'Chci kreativy',
       f_sent: 'Díky, máme to. Ozveme se vám s návrhem.', f_err: 'Odeslání se nepovedlo. Zkontrolujte údaje a zkuste to znovu.',
       m_cz: 'Česko', m_sk: 'Slovensko', m_pl: 'Polsko', m_hu: 'Maďarsko', m_de: 'Německo', m_at: 'Rakousko',
-      foot: 'Výpočet je orientační a vychází z postupů, které používáme u nejúspěšnějších klientů. Nezahrnuje katalogové kampaně.'
+      foot: 'Výpočet je orientační a vychází z postupů, které používáme u nejúspěšnějších klientů. Nezahrnuje katalogové kampaně.',
+      new_tiny: 'Při tomto rozpočtu stačí jedna testovací sada s {per} kreativami jednou za 2 měsíce.',
+      sit_note: ' Kvůli situaci účtu ({s}) počítáme s {f}× větším objemem.',
+      al_tiny: 'Pod {s} měsíčně doporučujeme novou testovací sadu jednou za 2 měsíce, aby měl každý test dost dat na vyhodnocení.',
+      al_ind: 'Nad {n} kreativ měsíčně připravujeme individuální nabídku. Rozsah i rytmus výroby probereme spolu.',
+      al_minlive: 'I při menším objemu doporučujeme mít v účtu současně aspoň {n} živých reklam, aby měl algoritmus z čeho vybírat.',
+      sit_label: 'Situace účtu',
+      sit_stable: 'Stabilní provoz',
+      sit_growth: 'Růst',
+      sit_launch: 'Launch / nový směr',
+      sit_hint: 'Růst a launch potřebují víc nových kreativ, protože se hledá, co funguje.',
+      spend_hint: 'Bez katalogových kampaní (dynamické reklamy z produktového feedu). U e-shopů do nich často jde většina rozpočtu, kreativy ale potřebují hlavně ostatní kampaně.',
+      cost_split: '{v} videí a {s} statik měsíčně',
+      fat_current: 'Při dnešním tempu ({n} / měs.)',
+      ex_eyebrow: 'Ukázky',
+      ex_h: 'Takhle vypadají AI kreativy',
+      ex_sub: 'Reklamy, které jsme s AI vyrobili pro klienty MAIRA a které běží v kampaních.',
+      ind_badge: 'individuální nabídka',
+      plan_tiny: 'Při tomto rozpočtu se nová sada spouští každý druhý měsíc, mezi tím běží vítězové z minulého testu.',
+      big_k_tiny: 'Nových kreativ každé 2 měsíce', sets_tiny: 'za 2 měsíce',
+      cost_split_tiny: '{v} videí a {s} statik jednou za 2 měsíce, cena rozpočítaná na měsíc'
     },
     sk: {
       eyebrow_hero: 'Kalkulačka kreatív pre Meta Ads', h1a: 'Koľko kreatív', h1b: 'naozaj', h1c: 'potrebujete?',
@@ -75,8 +95,8 @@ window.CS = (function () {
       big_k: 'Nových kreatív každý mesiac', videos: 'videí', statics: 'statík', per_year: 'za rok',
       kpi_live: 'Živých v účte', kpi_live_s: 'odporúčané súčasne, testy aj víťazi', kpi_week: 'Každý týždeň', kpi_sets: 'Testovacích sád',
       live_now: 'dnes {n}',
-      new_s: '{sets} po {per} kreatívach. Toľko ich účet potrebuje, aby {p} % rozpočtu išlo do testovania nových variantov.',
-      new_small: 'S týmto rozpočtom odporúčame začať jednou testovacou sadou mesačne s {per} kreatívami.',
+      new_s: '{sets} po {per} kreatívach. Počet rastie s rozpočtom: čím viac peňazí beží, tým rýchlejšie sa reklamy okukajú.',
+      new_small: 'Pri tomto rozpočte stačí {n} s {per} kreatívami mesačne.',
       new_none: 'Zadajte rozpočet a hneď uvidíte odporúčanie.',
       set_forms: ['testovacia sada', 'testovacie sady', 'testovacích sád'],
       week_s: 'nových kreatív, zhruba {n} sady týždenne', week_s0: 'nových kreatív', sets_s: 'mesačne, každá za {b}', sets_s0: 'mesačne',
@@ -90,26 +110,46 @@ window.CS = (function () {
       al_roas: 'Pri ROAS {r} zodpovedá tento spend tržbám z Mety okolo {t} mesačne.',
       al_live: 'V účte dnes beží {a} reklám, odporúčaných je {b}.',
       cost_eyebrow: 'Náklady na výrobu', cost_h: 'Koľko to stojí', prices_demo: 'Orientačné ceny',
-      cost_sub: 'Mesačná výroba odporúčaného objemu kreatív. Vďaka AI produkcii je pravidelné testovanie dostupné aj pre menšie rozpočty.',
+      cost_sub: 'Mesačná výroba odporúčaného objemu kreatív s AI.',
       cost_ai: 'AI produkcia', cost_cl: 'Klasická produkcia', of_spend: '{p} % mediálneho rozpočtu', of_rev: '{p} % tržieb z Mety',
       save: 'S AI produkciou ušetríte <b>{s}</b> mesačne, teda {p} % nákladov na výrobu.',
-      fat_eyebrow: 'Únava kreatív', fat_h: 'Čo sa stane bez nových kreatív', fat_with: 'S priebežným testovaním', fat_without: 'Bez obmeny kreatív',
-      fat_sub: 'Keď sa kreatívy neobmieňajú, publikum sa na ne vynadíva a každá konverzia postupne zdražuje. Takto by to vyzeralo pri vašom rozpočte počas 12 týždňov.',
+      fat_eyebrow: 'Únava kreatív', fat_h: 'Čo sa stane bez nových kreatív', fat_with: 'S odporúčaným testovaním', fat_without: 'Bez obmeny kreatív',
+      fat_sub: 'Keď sa kreatívy neobmieňajú dosť často, publikum sa na ne vynadíva a každá konverzia postupne zdražuje. Ani priebežné testovanie únavu úplne nezastaví, ale výrazne ju spomalí. Takto by to vyzeralo pri vašom rozpočte počas 12 týždňov.',
       fat_y_cpa: 'Cena za konverziu', fat_y_idx: 'Cena za konverziu (štart = 100)',
-      fat_loss_conv: 'Bez obmeny by ste za 12 týždňov za rovnaké peniaze dostali o ~{n} konverzií menej ({p} %).',
-      fat_loss_pct: 'Bez obmeny by ste za 12 týždňov za rovnaké peniaze dostali o ~{p} % menej konverzií.',
-      fat_loss_rev: 'To je zhruba <b>{r}</b> stratených tržieb. AI kreatívy na rovnaké obdobie stoja {a}.',
+      fat_loss_conv: 'Oproti odporúčanému testovaniu by ste za 12 týždňov za rovnaké peniaze dostali o ~{n} konverzií menej ({p} %).',
+      fat_loss_pct: 'Oproti odporúčanému testovaniu by ste za 12 týždňov za rovnaké peniaze dostali o ~{p} % menej konverzií.',
+      fat_loss_rev: 'To je zhruba <b>{r}</b> ušlých tržieb. AI kreatívy na rovnaké obdobie stoja {a}.',
       fat_roas_hint: 'Vyplňte ROAS a uvidíte, koľko tržieb by únava kreatív stála.',
-      fat_note: 'Odhad: bez obmeny rastie cena za konverziu o {f} % týždenne od {w}. týždňa, s priebežným testovaním zostáva stabilná.',
+      fat_note: 'Odhad: bez obmeny rastie cena za konverziu o {f} % týždenne od {w}. týždňa. Odporúčaný objem nových kreatív tento rast tlmí zhruba o {e} %.',
       week: 'Týždeň', wk: 'T',
       plan_eyebrow: 'Rytmus testovania', plan_h: 'Plán na mesiac', video: 'video', static: 'statika',
       plan_sub: 'Každý blok je jedna testovacia sada. Nové sady sa spúšťajú priebežne, aby účet nikdy nezostal bez čerstvých kreatív.',
       cta_eyebrow: 'Ďalší krok', cta_h: 'Pripravíme vám ich',
-      cta_sub: '{n} kreatív mesačne zvládneme vyrobiť s AI rýchlo a za zlomok ceny klasickej produkcie. Nechajte nám kontakt a ozveme sa s návrhom.',
+      cta_sub: '{n} kreatív mesačne vyrobíme s AI rýchlo a v kvalite, akú vidíte v ukážkach. Nechajte nám kontakt a ozveme sa s návrhom.',
       f_name: 'Meno', f_company: 'Firma', f_email: 'E-mail', f_send: 'Chcem kreatívy',
       f_sent: 'Vďaka, máme to. Ozveme sa vám s návrhom.', f_err: 'Odoslanie sa nepodarilo. Skontrolujte údaje a skúste to znova.',
       m_cz: 'Česko', m_sk: 'Slovensko', m_pl: 'Poľsko', m_hu: 'Maďarsko', m_de: 'Nemecko', m_at: 'Rakúsko',
-      foot: 'Výpočet je orientačný a vychádza z postupov, ktoré používame pri najúspešnejších klientoch. Nezahŕňa katalógové kampane.'
+      foot: 'Výpočet je orientačný a vychádza z postupov, ktoré používame pri najúspešnejších klientoch. Nezahŕňa katalógové kampane.',
+      new_tiny: 'Pri tomto rozpočte stačí jedna testovacia sada s {per} kreatívami raz za 2 mesiace.',
+      sit_note: ' Kvôli situácii účtu ({s}) počítame s {f}× väčším objemom.',
+      al_tiny: 'Pod {s} mesačne odporúčame novú testovaciu sadu raz za 2 mesiace, aby mal každý test dosť dát na vyhodnotenie.',
+      al_ind: 'Nad {n} kreatív mesačne pripravujeme individuálnu ponuku. Rozsah aj rytmus výroby preberieme spolu.',
+      al_minlive: 'Aj pri menšom objeme odporúčame mať v účte súčasne aspoň {n} živých reklám, aby mal algoritmus z čoho vyberať.',
+      sit_label: 'Situácia účtu',
+      sit_stable: 'Stabilná prevádzka',
+      sit_growth: 'Rast',
+      sit_launch: 'Launch / nový smer',
+      sit_hint: 'Rast a launch potrebujú viac nových kreatív, pretože sa hľadá, čo funguje.',
+      spend_hint: 'Bez katalógových kampaní (dynamické reklamy z produktového feedu). Pri e-shopoch do nich často ide väčšina rozpočtu, kreatívy však potrebujú hlavne ostatné kampane.',
+      cost_split: '{v} videí a {s} statík mesačne',
+      fat_current: 'Pri dnešnom tempe ({n} / mes.)',
+      ex_eyebrow: 'Ukážky',
+      ex_h: 'Takto vyzerajú AI kreatívy',
+      ex_sub: 'Reklamy, ktoré sme s AI vyrobili pre klientov MAIRA a ktoré bežia v kampaniach.',
+      ind_badge: 'individuálna ponuka',
+      plan_tiny: 'Pri tomto rozpočte sa nová sada spúšťa každý druhý mesiac, medzitým bežia víťazi z minulého testu.',
+      big_k_tiny: 'Nových kreatív každé 2 mesiace', sets_tiny: 'za 2 mesiace',
+      cost_split_tiny: '{v} videí a {s} statík raz za 2 mesiace, cena rozpočítaná na mesiac'
     },
     en: {
       eyebrow_hero: 'Creative calculator for Meta Ads', h1a: 'How many creatives', h1b: 'do you really', h1c: 'need?',
@@ -126,8 +166,8 @@ window.CS = (function () {
       big_k: 'New creatives every month', videos: 'videos', statics: 'statics', per_year: 'per year',
       kpi_live: 'Live in account', kpi_live_s: 'recommended at once, tests and winners', kpi_week: 'Every week', kpi_sets: 'Test sets',
       live_now: 'today {n}',
-      new_s: '{sets} of {per} creatives each. That is what the account needs so {p}% of budget goes into testing new variants.',
-      new_small: 'With this budget we recommend starting with one test set of {per} creatives a month.',
+      new_s: '{sets} of {per} creatives each. The number grows with budget: the more money runs, the faster ads wear out.',
+      new_small: 'At this budget {n} of {per} creatives a month is enough.',
       new_none: 'Enter a budget to see the recommendation.',
       set_forms: ['test set', 'test sets', 'test sets'],
       week_s: 'new creatives, about {n} sets a week', week_s0: 'new creatives', sets_s: 'a month, {b} each', sets_s0: 'a month',
@@ -141,26 +181,46 @@ window.CS = (function () {
       al_roas: 'At a ROAS of {r} this spend matches about {t} of monthly revenue from Meta.',
       al_live: 'The account runs {a} ads today, {b} are recommended.',
       cost_eyebrow: 'Production cost', cost_h: 'What it costs', prices_demo: 'Indicative prices',
-      cost_sub: 'Monthly production of the recommended creative volume. AI production makes steady testing affordable even for smaller budgets.',
+      cost_sub: 'Monthly AI production of the recommended creative volume.',
       cost_ai: 'AI production', cost_cl: 'Classic production', of_spend: '{p}% of media budget', of_rev: '{p}% of Meta revenue',
       save: 'AI production saves you <b>{s}</b> a month, {p}% of production costs.',
-      fat_eyebrow: 'Creative fatigue', fat_h: 'What happens without new creatives', fat_with: 'With continuous testing', fat_without: 'No creative refresh',
-      fat_sub: 'When creatives are not refreshed, the audience tires of them and every conversion gets more expensive. This is what it would mean for your budget over 12 weeks.',
+      fat_eyebrow: 'Creative fatigue', fat_h: 'What happens without new creatives', fat_with: 'With recommended testing', fat_without: 'No creative refresh',
+      fat_sub: 'When creatives are not refreshed often enough, the audience tires of them and every conversion gets more expensive. Continuous testing does not stop fatigue entirely, but slows it down a lot. This is what it would mean for your budget over 12 weeks.',
       fat_y_cpa: 'Cost per conversion', fat_y_idx: 'Cost per conversion (start = 100)',
-      fat_loss_conv: 'Without a refresh you would get ~{n} fewer conversions ({p}%) for the same money over 12 weeks.',
-      fat_loss_pct: 'Without a refresh you would get ~{p}% fewer conversions for the same money over 12 weeks.',
-      fat_loss_rev: 'That is about <b>{r}</b> of lost revenue. AI creatives for the same period cost {a}.',
+      fat_loss_conv: 'Compared with recommended testing you would get ~{n} fewer conversions ({p}%) for the same money over 12 weeks.',
+      fat_loss_pct: 'Compared with recommended testing you would get ~{p}% fewer conversions for the same money over 12 weeks.',
+      fat_loss_rev: 'That is about <b>{r}</b> of missed revenue. AI creatives for the same period cost {a}.',
       fat_roas_hint: 'Fill in ROAS to see how much revenue creative fatigue would cost.',
-      fat_note: 'Estimate: without a refresh the cost per conversion rises {f}% a week from week {w}; with continuous testing it stays stable.',
+      fat_note: 'Estimate: without a refresh the cost per conversion rises {f}% a week from week {w}. The recommended volume of new creatives dampens this by about {e}%.',
       week: 'Week', wk: 'W',
       plan_eyebrow: 'Testing rhythm', plan_h: 'Monthly plan', video: 'video', static: 'static',
       plan_sub: 'Each block is one test set. New sets launch continuously so the account never runs out of fresh creatives.',
       cta_eyebrow: 'Next step', cta_h: 'We will make them for you',
-      cta_sub: 'With AI we can produce {n} creatives a month quickly and for a fraction of classic production costs. Leave your contact and we will get back with a proposal.',
+      cta_sub: 'We produce {n} creatives a month with AI, quickly and at the quality you see in the examples. Leave your contact and we will get back with a proposal.',
       f_name: 'Name', f_company: 'Company', f_email: 'Email', f_send: 'I want creatives',
       f_sent: 'Thanks, got it. We will get back to you with a proposal.', f_err: 'Sending failed. Check the details and try again.',
       m_cz: 'Czechia', m_sk: 'Slovakia', m_pl: 'Poland', m_hu: 'Hungary', m_de: 'Germany', m_at: 'Austria',
-      foot: 'The calculation is indicative and based on the approach we use with our top-performing clients. It excludes catalog campaigns.'
+      foot: 'The calculation is indicative and based on the approach we use with our top-performing clients. It excludes catalog campaigns.',
+      new_tiny: 'At this budget one test set of {per} creatives every 2 months is enough.',
+      sit_note: ' Given the account situation ({s}) we plan {f}× the volume.',
+      al_tiny: 'Below {s} a month we recommend a new test set every 2 months, so each test gathers enough data.',
+      al_ind: 'Above {n} creatives a month we prepare a custom offer. We will agree the scope and production rhythm together.',
+      al_minlive: 'Even at a lower volume we recommend at least {n} live ads at once, so the algorithm has enough to choose from.',
+      sit_label: 'Account situation',
+      sit_stable: 'Steady state',
+      sit_growth: 'Growth',
+      sit_launch: 'Launch / new direction',
+      sit_hint: 'Growth and launches need more new creatives while you find what works.',
+      spend_hint: 'Excluding catalog campaigns (dynamic ads from a product feed). E-shops often put most of the budget there, but creatives matter mainly for the other campaigns.',
+      cost_split: '{v} videos and {s} statics a month',
+      fat_current: 'At today\'s pace ({n} / mo)',
+      ex_eyebrow: 'Examples',
+      ex_h: 'This is what AI creatives look like',
+      ex_sub: 'Ads we produced with AI for MAIRA clients, running in live campaigns.',
+      ind_badge: 'custom offer',
+      plan_tiny: 'At this budget a new set launches every other month; in between, the winners from the last test keep running.',
+      big_k_tiny: 'New creatives every 2 months', sets_tiny: 'every 2 months',
+      cost_split_tiny: '{v} videos and {s} statics every 2 months, cost spread per month'
     }
   };
 
@@ -201,53 +261,81 @@ window.CS = (function () {
     sel.value = v;
   }
 
-  /* S: spend (Kč/měs.), pct (0–1), daily (min. denní budget sady, Kč), days, vid, stat, win, life,
-        cpa (Kč), roas, current, liveNow, useCpa, prices{}, maxSets, fatigue{pct, start} */
+  // situace účtu: násobí doporučený počet kreativ
+  const SITUATIONS = ['stable', 'growth', 'launch'];
+
+  /* Výpočet (verze 0.5, podle návrhu z feedbacku):
+     počet nových kreativ se odvozuje přímo z rozpočtu – přímka mezi dvěma kotvami
+     (výchozí 100 tis. = 10 kreativ, 1 mil. = 50 kreativ), zaokrouhleno na schůdky (5),
+     vynásobeno situací účtu. Pod 100 tis. 1 sada měsíčně, pod 50 tis. 1 sada za 2 měsíce.
+     Nad horní kotvou je to individuální nabídka. CPA ani trh počet neovlivňují.
+
+     S: spend (Kč/měs.), pct (0–1), days, vid, stat, win, life, cpa (Kč), roas, current, liveNow,
+        sit ('stable'|'growth'|'launch'), mult{growth, launch}, rules{lowSpend, lowN, highSpend, highN, step, smallSpend, tinySpend, minLive},
+        prices{}, fatigue{pct, start, eff} */
   function calc(S) {
-    const useCpa = !!S.useCpa && S.cpa > 0;
+    const r = Object.assign({ lowSpend: 100000, lowN: 10, highSpend: 1000000, highN: 50, step: 5, smallSpend: 100000, tinySpend: 50000, minLive: 6 }, S.rules || {});
+    const sit = SITUATIONS.includes(S.sit) ? S.sit : 'stable';
+    const m = Object.assign({ growth: 1.5, launch: 2 }, S.mult || {});
+    const factor = sit === 'stable' ? 1 : (Number(m[sit]) || 1);
+    const vid = S.vid, stat = S.stat, perSet = Math.max(1, vid + stat);
+    const step = Math.max(1, r.step);
     const testBudget = S.spend * S.pct;
-    const baseSet = S.daily * S.days;
-    const cpaSet = S.cpa > 0 ? S.cpa * 50 * S.days / 7 : 0;
-    const cpaRaised = useCpa && cpaSet > baseSet;
-    const minSet = useCpa ? Math.max(baseSet, cpaSet) : baseSet;
-    const maxSets = Math.max(1, Math.round(S.maxSets || 20));
-    let sets = minSet > 0 ? Math.floor(testBudget / minSet) : 0, mode = 'normal';
-    if (sets === 0 && testBudget > 0) { sets = 1; mode = 'small'; }           // malý rozpočet: aspoň jedna sada
-    else if (sets > maxSets) { sets = maxSets; mode = 'capped'; }              // velký rozpočet: víc peněz na sadu
-    // velmi malý rozpočet (méně než půlka minima): menší sada se 3 kreativami (2 videa + 1 statika)
-    const mini = mode === 'small' && testBudget < minSet * 0.5;
-    const vid = mini ? Math.min(S.vid, 2) : S.vid, stat = mini ? Math.min(S.stat, 1) : S.stat, perSet = vid + stat;
-    const setBudget = sets > 0 ? testBudget / sets : 0;                         // celý rozpočet na testování se rozdělí
-    const setDaily = setBudget / S.days;
-    const fullFrom = S.pct > 0 ? minSet / S.pct : 0;                            // od jakého spendu funguje test naplno
+
+    let mode = 'none', sets = 0, base = 0;
+    if (S.spend > 0) {
+      if (S.spend < r.tinySpend) { mode = 'tiny'; sets = factor >= 2 ? 1 : 0.5; }            // 1 sada za 2 měsíce
+      else if (S.spend < r.smallSpend) { mode = 'small'; sets = Math.max(1, Math.round(factor)); } // 1 sada měsíčně
+      else {
+        mode = 'normal';
+        const slope = (r.highN - r.lowN) / Math.max(1, r.highSpend - r.lowSpend);
+        base = r.lowN + (S.spend - r.lowSpend) * slope;
+        const need = Math.max(step, Math.round(base * factor / step) * step);
+        sets = Math.max(1, Math.ceil(need / perSet));
+      }
+    }
     const newAds = sets * perSet, nV = sets * vid, nS = sets * stat;
+    const individual = mode === 'normal' && newAds > r.highN;                  // nad horní kotvou: individuální nabídka
+    const setBudget = sets > 0 ? testBudget / Math.max(1, sets) : 0;
+    const setDaily = setBudget / S.days;
     const concurrent = sets * S.days / DPM, liveTest = concurrent * perSet, liveWin = sets * S.win * (S.life * 7 / DPM);
-    const live = Math.round(liveTest + liveWin), perWeek = newAds / WPM;
+    const liveCalc = liveTest + liveWin;
+    const live = S.spend > 0 ? Math.max(r.minLive, Math.round(liveCalc)) : 0;
+    const liveRaised = S.spend > 0 && Math.round(liveCalc) < r.minLive;
+    const perWeek = newAds / WPM;
     const p = S.prices || {};
     const costAi = nV * (p.aiVideo || 0) + nS * (p.aiStatic || 0);
     const costClassic = nV * (p.classicVideo || 0) + nS * (p.classicStatic || 0);
     const conv = S.cpa > 0 ? S.spend / S.cpa : 0;
     const revenue = S.roas > 0 ? S.spend * S.roas : 0;
 
-    // únava kreativ za 12 týdnů: index ceny za konverzi (100 = dnes)
-    const f = (S.fatigue && S.fatigue.pct != null ? S.fatigue.pct : 7) / 100;
-    const start = S.fatigue && S.fatigue.start ? S.fatigue.start : 3;
-    const withIdx = [], withoutIdx = [];
-    for (let i = 0; i <= FAT_WEEKS; i++) { withIdx.push(100); withoutIdx.push(i < start ? 100 : 100 * Math.pow(1 + f, i - start + 1)); }
+    // únava kreativ za 12 týdnů: index ceny za konverzi (100 = dnes).
+    // Obměna kreativ únavu tlumí jen zčásti (účinnost eff), a jen v poměru k doporučenému objemu.
+    const fz = S.fatigue || {};
+    const f = (fz.pct != null ? fz.pct : 7) / 100;
+    const start = fz.start || 3;
+    const eff = Math.min(1, Math.max(0, (fz.eff != null ? fz.eff : 70) / 100));
+    const curve = rate => {
+      const cover = newAds > 0 ? Math.min(1, rate / newAds) : 0, fe = f * (1 - eff * cover), a = [];
+      for (let i = 0; i <= FAT_WEEKS; i++) a.push(i < start ? 100 : 100 * Math.pow(1 + fe, i - start + 1));
+      return a;
+    };
+    const withIdx = curve(newAds), withoutIdx = curve(S.current > 0 ? S.current : 0);
     const W = S.spend / WPM;
     let convRatioWith = 0, convRatioWithout = 0;
     for (let i = 1; i <= FAT_WEEKS; i++) { convRatioWith += 100 / withIdx[i]; convRatioWithout += 100 / withoutIdx[i]; }
-    const lostPct = convRatioWith > 0 ? (1 - convRatioWithout / convRatioWith) * 100 : 0;
-    const lostConv = S.cpa > 0 ? W / S.cpa * (convRatioWith - convRatioWithout) : 0;
-    const lostRevenue = S.roas > 0 ? W * S.roas * (convRatioWith - convRatioWithout) : 0;
+    const lostPct = convRatioWith > 0 ? Math.max(0, (1 - convRatioWithout / convRatioWith) * 100) : 0;
+    const lostConv = S.cpa > 0 ? Math.max(0, W / S.cpa * (convRatioWith - convRatioWithout)) : 0;
+    const lostRevenue = S.roas > 0 ? Math.max(0, W * S.roas * (convRatioWith - convRatioWithout)) : 0;
     const aiCost12w = costAi * FAT_WEEKS / WPM;
 
-    return { S, useCpa, vid, stat, mini, perSet, testBudget, baseSet, cpaSet, cpaRaised, minSet, maxSets, mode, fullFrom, setBudget, setDaily, sets, newAds, nV, nS,
-      concurrent, liveTest, liveWin, live, perWeek, costAi, costClassic, conv, revenue,
-      fatigue: { f, start, withIdx, withoutIdx, lostPct, lostConv, lostRevenue, aiCost12w } };
+    return { S, rules: r, sit, factor, base, vid, stat, perSet, testBudget, mode, individual, setBudget, setDaily, sets, newAds, nV, nS,
+      concurrent, liveTest, liveWin, liveCalc, live, liveRaised, perWeek, costAi, costClassic, conv, revenue,
+      fatigue: { f, start, eff, withIdx, withoutIdx, lostPct, lostConv, lostRevenue, aiCost12w, hasCurrent: S.current > 0 } };
   }
 
-  const weekSplit = sets => { const b = Math.floor(sets / 4), e = sets % 4; return [0, 1, 2, 3].map(w => b + (w < e ? 1 : 0)); };
+  // rozložení sad do 4 týdnů; půl sady měsíčně = jedna sada v 1. týdnu, každý druhý měsíc
+  const weekSplit = sets => { const n = Math.ceil(sets), b = Math.floor(n / 4), e = n % 4; return [0, 1, 2, 3].map(w => b + (w < e ? 1 : 0)); };
 
   function renderChart(R) {
     const c = $('chart'); if (!c) return;
@@ -295,7 +383,8 @@ window.CS = (function () {
     }
     const out = $('fatOut'); if (out) out.innerHTML = parts.map(p => esc(p).replace(/&lt;b&gt;/g, '<b>').replace(/&lt;\/b&gt;/g, '</b>')).join(' ');
     const hint = $('fatHint'); if (hint) hint.hidden = S.roas > 0 || !(S.spend > 0);
-    const note = $('fatNote'); if (note) note.textContent = t('fat_note', { f: fmt(F2.f * 100, 1), w: F2.start });
+    const note = $('fatNote'); if (note) note.textContent = t('fat_note', { f: fmt(F2.f * 100, 1), w: F2.start, e: fmt(F2.eff * 100) });
+    const lw = $('legWithout'); if (lw) lw.textContent = F2.hasCurrent ? t('fat_current', { n: fmt(S.current) }) : t('fat_without');
   }
 
   function renderPlan(R) {
@@ -307,30 +396,44 @@ window.CS = (function () {
       const body = n === 0 ? '<span class="empty">–</span>' : setHtml.repeat(shown) + (n > shown ? `<span class="more">+${n - shown}</span>` : '');
       return `<div class="week"><div class="wh"><span class="wl">${esc(t('week'))} ${w + 1}</span><span class="wc">${fmt(n * R.perSet)}</span></div><div class="sets">${body}</div></div>`;
     }).join('');
+    const pn = $('planNote'); if (pn) { pn.hidden = R.mode !== 'tiny'; pn.textContent = R.mode === 'tiny' ? t('plan_tiny') : ''; }
   }
 
   function renderCost(R) {
     if (!$('cAi')) return;
     const { S } = R, ai = R.costAi, cl = R.costClassic;
-    $('cAi').textContent = money(ai); $('cCl').textContent = money(cl);
     // podíl nákladů: proti tržbám, když známe ROAS, jinak proti mediálnímu rozpočtu
     const share = v => R.revenue > 0 ? t('of_rev', { p: fmt(v / R.revenue * 100, 1) }) : (S.spend > 0 ? t('of_spend', { p: fmt(v / S.spend * 100, 1) }) : '');
-    $('cAiS').textContent = share(ai); $('cClS').textContent = share(cl);
-    const mx = Math.max(ai, cl, 1);
-    $('bAi').style.width = (ai / mx * 100) + '%'; $('bCl').style.width = (cl / mx * 100) + '%';
-    $('cSave').innerHTML = cl > ai ? t('save', { s: esc(money(cl - ai)), p: fmt((cl - ai) / cl * 100) }) : '';
+    $('cAi').textContent = money(ai); $('cAiS').textContent = share(ai);
+    const split = $('cSplit'); if (split) split.textContent = R.newAds <= 0 ? '' : (R.sets < 1 ? t('cost_split_tiny', { v: fmt(R.vid), s: fmt(R.stat) }) : t('cost_split', { v: fmt(R.nV), s: fmt(R.nS) }));
+    // srovnání s klasickou produkcí jen tam, kde na stránce je (admin)
+    if ($('cCl')) {
+      $('cCl').textContent = money(cl); $('cClS').textContent = share(cl);
+      const mx = Math.max(ai, cl, 1);
+      $('bAi').style.width = (ai / mx * 100) + '%'; $('bCl').style.width = (cl / mx * 100) + '%';
+      $('cSave').innerHTML = cl > ai ? t('save', { s: esc(money(cl - ai)), p: fmt((cl - ai) / cl * 100) }) : '';
+    }
   }
 
   /* opts.internal: admin (podrobnosti o fázi učení), opts.cpaHint, opts.dailyHint(R) */
   function render(R, opts = {}) {
     const { S } = R;
     const set = (id, v) => { const e = $(id); if (e) e.textContent = v; };
-    set('rNew', fmt(R.newAds)); set('rVid', fmt(R.nV)); set('rStat', fmt(R.nS)); set('rYear', fmt(R.newAds * 12));
-    set('rNewS', R.sets === 0 ? t('new_none') : (R.mode === 'small' ? t('new_small', { per: R.perSet }) : t('new_s', { sets: fmt(R.sets) + ' ' + pf(R.sets), per: R.perSet, p: fmt(S.pct * 100) })));
+    // malý rozpočet: ukazujeme jednu sadu za 2 měsíce, ne „2,5 kreativy měsíčně“
+    const tiny = R.mode === 'tiny' && R.sets < 1;
+    set('bigK', t(tiny ? 'big_k_tiny' : 'big_k'));
+    set('rNew', fmt(tiny ? R.perSet : R.newAds) + (R.individual ? '+' : ''));
+    set('rVid', fmt(tiny ? R.vid : R.nV)); set('rStat', fmt(tiny ? R.stat : R.nS)); set('rYear', fmt(R.newAds * 12));
+    const ib = $('rInd'); if (ib) ib.hidden = !R.individual;
+    const sitNote = R.sit !== 'stable' && R.mode !== 'tiny' ? t('sit_note', { s: t('sit_' + R.sit).toLowerCase(), f: fmt(R.factor, 1) }) : '';
+    set('rNewS', R.mode === 'none' ? t('new_none')
+      : R.mode === 'tiny' ? t('new_tiny', { per: R.perSet })
+      : R.mode === 'small' ? t('new_small', { n: fmt(R.sets) + ' ' + pf(R.sets), per: R.perSet }) + sitNote
+      : t('new_s', { sets: fmt(R.sets) + ' ' + pf(R.sets), per: R.perSet }) + sitNote);
     set('rLive', fmt(R.live)); set('rLiveNow', S.liveNow > 0 ? t('live_now', { n: fmt(S.liveNow) }) : '');
-    set('rWeek', fmt(Math.round(R.perWeek)));
-    set('rWeekS', R.sets > 0 ? t('week_s', { n: fmt(R.sets / WPM, 1) }) : t('week_s0'));
-    set('rSets', fmt(R.sets)); set('rSetsS', R.setBudget > 0 ? t('sets_s', { b: money(R.setBudget) }) : t('sets_s0'));
+    set('rWeek', tiny ? '–' : fmt(R.perWeek, R.perWeek < 3 ? 1 : 0));
+    set('rWeekS', R.sets >= 1 ? t('week_s', { n: fmt(R.sets / WPM, 1) }) : t('week_s0'));
+    set('rSets', tiny ? '1' : fmt(R.sets)); if (tiny) set('rSetsS', t('sets_tiny')); else set('rSetsS', R.setBudget > 0 ? t('sets_s', { b: money(R.setBudget) }) : t('sets_s0'));
     if (opts.dailyHint) set('dailyHint', S.spend > 0 ? opts.dailyHint(R) : '');
 
     const gb = $('gapBox');
@@ -343,25 +446,41 @@ window.CS = (function () {
     }
 
     const al = [];
-    if (R.mode === 'small') al.push(['', t('al_small', { m: money(R.minSet), b: money(R.setBudget), d: money(R.setDaily), s: money(R.fullFrom) })]);
-    if (R.mode === 'capped') al.push(['good', t('al_cap', { n: fmt(R.sets), b: money(R.setBudget) })]);
+    if (R.mode === 'tiny') al.push(['', t('al_tiny', { s: money(R.rules.tinySpend) })]);
+    if (R.individual) al.push(['good', t('al_ind', { n: fmt(R.rules.highN) })]);
+    if (R.liveRaised) al.push(['', t('al_minlive', { n: fmt(R.rules.minLive) })]);
     if (S.liveNow > 0 && R.live > 0 && S.liveNow < R.live * 0.9) al.push(['', t('al_live', { a: fmt(S.liveNow), b: fmt(R.live) })]);
     if (S.cpa > 0 && S.spend > 0) {
       if (opts.internal) {
         const cs = R.setBudget / S.cpa, cw = cs / S.days * 7;
         let tx = t('al_cpa', { c: money(S.cpa), m: fmt(R.conv), s: fmt(cs), w: fmt(cw) });
-        if (!R.useCpa && cw < 50) { tx += t('al_cpa_low') + (opts.cpaHint || ''); al.push(['', tx]); } else al.push(['good', tx]);
+        if (cw < 50) { tx += t('al_cpa_low') + (opts.cpaHint || ''); al.push(['', tx]); } else al.push(['good', tx]);
       } else al.push(['good', t('al_cpa_pub', { c: money(S.cpa), m: fmt(R.conv) })]);
     }
     if (R.revenue > 0) al.push(['good', t('al_roas', { r: fmt(S.roas, 2), t: money(R.revenue) })]);
     const ae = $('alerts'); if (ae) ae.innerHTML = al.map(([c, x]) => `<div class="alert ${c}">${esc(x)}</div>`).join('');
 
     renderCost(R); renderChart(R); renderPlan(R);
-    set('ctaSub', t('cta_sub', { n: fmt(R.newAds) }));
+    set('ctaSub', t('cta_sub', { n: fmt(R.newAds) + (R.individual ? '+' : '') }));
+  }
+
+  // ukázky AI kreativ (spravují se v adminu); prázdný seznam = sekce se skryje
+  function renderExamples(list, boxId = 'examples', sectionId = 'exSection') {
+    const box = $(boxId), sec = $(sectionId); if (!box) return;
+    const items = (list || []).filter(x => x && x.src);
+    if (sec) sec.hidden = !items.length;
+    const isVideo = x => x.kind === 'video' || /\.(mp4|webm|mov)(\?|$)/i.test(x.src);
+    box.innerHTML = items.map(x => {
+      const media = isVideo(x)
+        ? `<video src="${esc(x.src)}" ${x.poster ? `poster="${esc(x.poster)}"` : ''} muted loop playsinline controls preload="metadata"></video>`
+        : `<img src="${esc(x.src)}" alt="${esc(x.title || '')}" loading="lazy">`;
+      const fmtCls = x.ratio === '9:16' ? 'r916' : (x.ratio === '16:9' ? 'r169' : (x.ratio === '4:5' ? 'r45' : 'r11'));
+      return `<figure class="ex ${fmtCls}"><div class="media">${media}</div><figcaption>${x.title ? `<b>${esc(x.title)}</b>` : ''}${x.client ? `<span>${esc(x.client)}</span>` : ''}${x.result ? `<span class="res">${esc(x.result)}</span>` : ''}</figcaption></figure>`;
+    }).join('');
   }
 
   function tidy(el) { if (el.value.trim() === '') return; el.value = fmtIn(num(el.value), 2); }
 
   return { I, DPM, WPM, MARKET_KEYS, CURRENCIES, PRESETS, setLang, getLang, setCurrency, getCurrency, setRates, rate, toCZK, fromCZK, curSymbol,
-    num, fmt, fmtIn, money, kc, t, pf, esc, applyTexts, marketOptions, calc, render, weekSplit, tidy };
+    num, fmt, fmtIn, money, kc, t, pf, esc, applyTexts, marketOptions, calc, render, renderExamples, weekSplit, tidy, SITUATIONS };
 })();

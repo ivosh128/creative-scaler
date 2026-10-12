@@ -63,6 +63,7 @@
             </div>
           </div>
           <div class="seg full" role="group" aria-label="Rychlá volba rozpočtu" id="presetSeg"></div>
+          <span class="hint" data-i18n="spend_hint" style="margin-top:-8px"></span>
           <div class="field">
             <label for="spend" id="spendLabel" data-i18n="spend_label"></label>
             <div class="in"><input id="spend" type="text" inputmode="numeric"><span class="u" id="spendUnit"></span></div>
@@ -70,8 +71,13 @@
             <span class="hint" id="dailyHint"></span>
           </div>
           <div class="field">
-            <label for="market" data-i18n="market"></label>
-            <div class="in"><select id="market"></select></div>
+            <span class="lbl" data-i18n="sit_label"></span>
+            <div class="seg full sit" role="group" aria-label="Situace účtu" id="sitSeg">
+              <button type="button" data-sit="stable" data-i18n="sit_stable"></button>
+              <button type="button" data-sit="growth" data-i18n="sit_growth"></button>
+              <button type="button" data-sit="launch" data-i18n="sit_launch"></button>
+            </div>
+            <span class="hint" data-i18n="sit_hint"></span>
           </div>
         </div>
         <div class="group">
@@ -89,9 +95,10 @@
 
       <div class="results" aria-live="polite">
         <section class="big">
-          <div class="k" data-i18n="big_k"></div>
+          <div class="k" id="bigK" data-i18n="big_k"></div>
           <div class="n" id="rNew">–</div>
           <div class="side">
+            <span class="badge ind" id="rInd" data-i18n="ind_badge" hidden></span>
             <p class="s" id="rNewS" data-i18n="loading"></p>
             <div class="split">
               <div><b id="rVid">–</b><span data-i18n="videos"></span></div>
@@ -125,15 +132,21 @@
       </div>
       <span class="badge" id="pricesBadge" data-i18n="prices_demo" hidden></span>
     </div>
-    <div class="cost">
-      <div class="ai"><span class="k" data-i18n="cost_ai"></span><span class="n" id="cAi"></span><span class="s" id="cAiS"></span></div>
-      <div><span class="k" data-i18n="cost_cl"></span><span class="n" id="cCl"></span><span class="s" id="cClS"></span></div>
+    <div class="cost single">
+      <div class="ai"><span class="k" data-i18n="cost_ai"></span><span class="n" id="cAi"></span><span class="s" id="cAiS"></span><span class="s" id="cSplit"></span></div>
     </div>
-    <div class="bars" aria-hidden="true">
-      <div class="bar ai"><span data-i18n="cost_ai"></span><span class="track"><span class="fill" id="bAi"></span></span></div>
-      <div class="bar"><span data-i18n="cost_cl"></span><span class="track"><span class="fill" id="bCl"></span></span></div>
+  </div>
+</section>
+
+<!-- ============ UKÁZKY (zelená) – plní se z adminu, prázdné = skryté ============ -->
+<section class="section same" id="exSection" hidden>
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow-lg" data-i18n="ex_eyebrow"></span>
+      <h2 data-i18n="ex_h"></h2>
+      <p class="sub" data-i18n="ex_sub"></p>
     </div>
-    <p class="save" id="cSave"></p>
+    <div class="examples" id="examples"></div>
   </div>
 </section>
 
@@ -145,7 +158,7 @@
         <h2 data-i18n="fat_h"></h2>
         <p class="sub" data-i18n="fat_sub"></p>
       </div>
-      <div class="legend"><span><span class="ln"></span><span data-i18n="fat_with"></span></span><span><span class="ln d"></span><span data-i18n="fat_without"></span></span></div>
+      <div class="legend"><span><span class="ln"></span><span data-i18n="fat_with"></span></span><span><span class="ln d"></span><span id="legWithout" data-i18n="fat_without"></span></span></div>
     </div>
     <div class="chart" id="chart"></div>
     <p class="save" id="fatOut"></p>
@@ -166,6 +179,7 @@
       <div class="legend"><span><i class="lv"></i><span data-i18n="video"></span></span><span><i class="ls"></i><span data-i18n="static"></span></span></div>
     </div>
     <div class="weeks" id="weeks"></div>
+    <p class="note" id="planNote" hidden></p>
   </div>
 </section>
 

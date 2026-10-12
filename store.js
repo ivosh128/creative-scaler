@@ -13,9 +13,15 @@ const DEFAULT_CONFIG = {
   staticsPerSet: 2,
   winnersPerSet: 1,
   winnerLifeWeeks: 4,
-  maxSetsPerMonth: 20,
+  maxSetsPerMonth: 20, // starý výpočet (do v0.4), dnes se nepoužívá
   fatigueWeeklyPct: 7,
   fatigueStartWeek: 3,
+  refreshEffPct: 70,   // o kolik % doporučená obměna kreativ tlumí únavu
+  // počet nových kreativ podle rozpočtu: přímka mezi dvěma kotvami, zaokrouhleno na schůdky
+  rules: { lowSpend: 100000, lowN: 10, highSpend: 1000000, highN: 50, step: 5, smallSpend: 100000, tinySpend: 50000, minLive: 6 },
+  situations: { growth: 1.5, launch: 2 },
+  // ukázky AI kreativ ve veřejné části: { title, client, result, src, poster, kind: 'video'|'image', ratio: '1:1'|'9:16'|'4:5'|'16:9' }
+  examples: [],
   rates: { EUR: 24.35, USD: 21.36 },
   markets: {
     cz: { daily: 5000, verified: true },
@@ -50,7 +56,10 @@ function getConfig() {
     ...saved,
     markets: { ...DEFAULT_CONFIG.markets, ...(saved.markets || {}) },
     prices: { ...DEFAULT_CONFIG.prices, ...(saved.prices || {}) },
-    rates: { ...DEFAULT_CONFIG.rates, ...(saved.rates || {}) }
+    rates: { ...DEFAULT_CONFIG.rates, ...(saved.rates || {}) },
+    rules: { ...DEFAULT_CONFIG.rules, ...(saved.rules || {}) },
+    situations: { ...DEFAULT_CONFIG.situations, ...(saved.situations || {}) },
+    examples: Array.isArray(saved.examples) ? saved.examples : []
   };
 }
 
@@ -63,4 +72,7 @@ function saveConfig(cfg) {
 function getLeads() { return readJson('leads.json', []); }
 function saveLeads(list) { writeJson('leads.json', list); }
 
-module.exports = { DATA_DIR, DEFAULT_CONFIG, getConfig, saveConfig, getLeads, saveLeads };
+const MEDIA_DIR = path.join(DATA_DIR, 'media');
+fs.mkdirSync(MEDIA_DIR, { recursive: true });
+
+module.exports = { DATA_DIR, MEDIA_DIR, DEFAULT_CONFIG, getConfig, saveConfig, getLeads, saveLeads };

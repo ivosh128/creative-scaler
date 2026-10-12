@@ -1,30 +1,28 @@
 /* Creative Scaler – veřejná část */
 (function () {
-  const { num, fmt, fmtIn, t, applyTexts, marketOptions, calc, render, setLang, getLang, setCurrency, getCurrency, setRates,
+  const { num, fmt, fmtIn, t, applyTexts, calc, render, renderExamples, SITUATIONS, setLang, getLang, setCurrency, getCurrency, setRates,
     toCZK, fromCZK, money, curSymbol, tidy, DPM, PRESETS } = CS;
   const $ = id => document.getElementById(id);
   let cfg = null, last = null;
-  const state = { spend: 1000000, mode: 'month', cpa: 0, conv: 0, convSource: 'cpa', over: {} }; // peníze v Kč, spend měsíčně
+  const state = { spend: 300000, mode: 'month', sit: 'stable', cpa: 0, conv: 0, convSource: 'cpa', over: {} }; // peníze v Kč, spend měsíčně
 
   /* ---------- předpoklady: z nastavení adminu, případně z odkazu od týmu ---------- */
   const q = new URLSearchParams(location.search);
-  const OVERRIDES = { pct: [1, 100], daily: [100, 1e7], days: [1, 60], vid: [0, 20], stat: [0, 20], win: [0, 20], life: [0, 52], maxSets: [1, 200] };
+  const OVERRIDES = { pct: [1, 100], days: [1, 60], vid: [0, 20], stat: [0, 20], win: [0, 20], life: [0, 52] };
   Object.entries(OVERRIDES).forEach(([k, [lo, hi]]) => {
     if (!q.has(k)) return; const v = num(q.get(k)); if (v >= lo && v <= hi) state.over[k] = v;
   });
   if (state.over.vid !== undefined && state.over.stat !== undefined && state.over.vid + state.over.stat < 1) { delete state.over.vid; delete state.over.stat; }
-  state.over.useCpa = q.get('cpa50') === '1';
 
   function read() {
-    const market = $('market').value || 'cz', o = state.over;
-    const cpa = state.cpa;
+    const o = state.over;
     return {
-      spend: state.spend, pct: (o.pct ?? cfg.testPct) / 100, market,
-      daily: o.daily ?? (cfg.markets[market] || cfg.markets.cz).daily, days: o.days ?? cfg.testDays,
+      spend: state.spend, pct: (o.pct ?? cfg.testPct) / 100, sit: state.sit, mult: cfg.situations, rules: cfg.rules,
+      days: o.days ?? cfg.testDays,
       vid: o.vid ?? cfg.videosPerSet, stat: o.stat ?? cfg.staticsPerSet, win: o.win ?? cfg.winnersPerSet, life: o.life ?? cfg.winnerLifeWeeks,
-      maxSets: o.maxSets ?? cfg.maxSetsPerMonth, fatigue: { pct: cfg.fatigueWeeklyPct, start: cfg.fatigueStartWeek },
-      cpa, roas: num($('roas').value), current: num($('current').value), liveNow: num($('liveNow').value),
-      useCpa: !!o.useCpa, prices: cfg.prices
+      fatigue: { pct: cfg.fatigueWeeklyPct, start: cfg.fatigueStartWeek, eff: cfg.refreshEffPct },
+      cpa: state.cpa, roas: num($('roas').value), current: num($('current').value), liveNow: num($('liveNow').value),
+      prices: cfg.prices
     };
   }
 
@@ -35,6 +33,7 @@
     $('spend').value = fmtIn(round(v));
     $('spendR').value = Math.min(5000000, Math.max(10000, state.spend));
   }
+  function showSit() { document.querySelectorAll('#sitSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.sit === state.sit))); }
   function showCpa() {
     // pole, které uživatel nevyplnil, ukazuje dopočítanou hodnotu jako nápovědu
     if (state.convSource === 'cpa') {
@@ -49,7 +48,7 @@
   }
   function presets() {
     const list = PRESETS[getCurrency()];
-    $('presetSeg').innerHTML = list.map(v => `<button type="button" data-v="${v}">${v >= 1e6 ? fmt(v / 1e6, 1) + 'M' : fmt(v / 1000) + 'k'}</button>`).join('');
+    $('presetSeg').innerHTML = list.map(v => `<button type="button" data-v="${v}">${v >= 1e6 ? fmt(v / 1e6, 1) + 'M' : fmt(v / 1000, 1) + 'k'}</button>`).join('');
     markPresets();
   }
   function markPresets() {
@@ -65,7 +64,7 @@
     document.querySelectorAll('#modeSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === state.mode)));
     document.querySelectorAll('#langSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === getLang())));
   }
-  function texts() { applyTexts(); marketOptions($('market')); labels(); presets(); }
+  function texts() { applyTexts(); labels(); presets(); showSit(); if (cfg) renderExamples(cfg.examples); }
 
   function syncConv() {
     if (state.convSource === 'conv' && state.cpa > 0) { state.conv = state.spend / state.cpa; $('conv').value = fmtIn(state.conv); }
@@ -90,7 +89,7 @@
   if (q.has('spend')) state.spend = Math.max(0, num(q.get('spend')));
   if (q.has('cpa')) state.cpa = Math.max(0, num(q.get('cpa')));
   ['roas', 'current', 'liveNow'].forEach(k => { if (q.has(k)) $(k).value = fmtIn(num(q.get(k)), 2); });
-  if (q.has('market')) { marketOptions($('market')); $('market').value = q.get('market'); }
+  if (SITUATIONS.includes(q.get('sit'))) state.sit = q.get('sit');
 
   /* ---------- události ---------- */
   $('spend').addEventListener('input', () => { const v = num($('spend').value); state.spend = toCZK(state.mode === 'day' ? v * DPM : v); $('spendR').value = Math.min(5000000, Math.max(10000, state.spend)); update(); });
@@ -101,7 +100,7 @@
   $('conv').addEventListener('input', () => { state.conv = num($('conv').value); state.convSource = 'conv'; state.cpa = state.conv > 0 ? state.spend / state.conv : 0; $('cpa').value = ''; last = calc(read()); render(last, renderOpts()); afterRender(); });
   ['cpa', 'conv', 'roas', 'current', 'liveNow'].forEach(id => $(id).addEventListener('blur', () => tidy($(id))));
   ['roas', 'current', 'liveNow'].forEach(id => $(id).addEventListener('input', update));
-  $('market').addEventListener('change', update);
+  document.querySelectorAll('#sitSeg button').forEach(b => b.addEventListener('click', () => { state.sit = b.dataset.sit; showSit(); update(); }));
   document.querySelectorAll('#curSeg button').forEach(b => b.addEventListener('click', () => { setCurrency(b.dataset.cur); texts(); showSpend(); showCpa(); update(); }));
   document.querySelectorAll('#modeSeg button').forEach(b => b.addEventListener('click', () => { state.mode = b.dataset.mode; labels(); showSpend(); update(); }));
   document.querySelectorAll('#langSeg button').forEach(b => b.addEventListener('click', () => { setLang(b.dataset.lang); texts(); update(); }));
@@ -113,7 +112,7 @@
     const msg = $('ctaMsg'), btn = $('ctaBtn');
     const body = {
       name: $('cName').value, company: $('cCompany').value, email: $('cEmail').value, website: $('cWeb').value, lang: getLang(),
-      calc: last ? { spend: last.S.spend, market: last.S.market, cpa: last.S.cpa, roas: last.S.roas, current: last.S.current, liveNow: last.S.liveNow, newAds: last.newAds, live: last.live, sets: last.sets, costAi: last.costAi, costClassic: last.costClassic, currency: getCurrency() } : {}
+      calc: last ? { spend: last.S.spend, sit: last.sit, cpa: last.S.cpa, roas: last.S.roas, current: last.S.current, liveNow: last.S.liveNow, newAds: last.newAds, live: last.live, sets: last.sets, costAi: last.costAi, costClassic: last.costClassic, currency: getCurrency() } : {}
     };
     if (!body.name.trim() || !body.company.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(body.email)) { msg.hidden = false; msg.style.color = 'var(--warn)'; msg.textContent = t('f_err'); return; }
     btn.disabled = true;
@@ -129,7 +128,7 @@
   fetch('/api/config').then(r => { if (r.status === 401) { location.href = '/login?next=' + encodeURIComponent(location.pathname + location.search); throw new Error('auth'); } return r.json(); })
     .then(c => {
       cfg = c; setRates(c.rates); $('pricesBadge').hidden = !c.pricesAreDemo;
-      if (q.has('market')) $('market').value = q.get('market');
+      renderExamples(c.examples);
       showSpend(); showCpa(); update();
     })
     .catch(() => {});

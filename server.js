@@ -148,13 +148,26 @@ app.get('/api/config', requirePublic, (req, res) => {
   res.json({
     testPct: c.testPct, testDays: c.testDays, videosPerSet: c.videosPerSet, staticsPerSet: c.staticsPerSet,
     winnersPerSet: c.winnersPerSet, winnerLifeWeeks: c.winnerLifeWeeks,
-    maxSetsPerMonth: c.maxSetsPerMonth, fatigueWeeklyPct: c.fatigueWeeklyPct, fatigueStartWeek: c.fatigueStartWeek, rates: c.rates,
-    markets: Object.fromEntries(Object.entries(c.markets).map(([k, v]) => [k, { daily: v.daily }])),
-    prices: c.prices, pricesAreDemo: c.pricesAreDemo
+    fatigueWeeklyPct: c.fatigueWeeklyPct, fatigueStartWeek: c.fatigueStartWeek, refreshEffPct: c.refreshEffPct, rates: c.rates,
+    rules: c.rules, situations: c.situations, examples: c.examples,
+    // klasickou produkci veřejnosti neposíláme, srovnání se ve veřejné části neukazuje
+    prices: { aiVideo: c.prices.aiVideo, aiStatic: c.prices.aiStatic }, pricesAreDemo: c.pricesAreDemo
   });
 });
+/* ---------- ukázky: nahrání souboru do DATA_DIR/media ---------- */
+const MEDIA_TYPES = { 'video/mp4': 'mp4', 'video/webm': 'webm', 'video/quicktime': 'mov', 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
+app.use('/media', requirePublic, express.static(store.MEDIA_DIR, { maxAge: '7d', fallthrough: false }));
+app.post('/api/admin/media', requireAdmin, express.raw({ type: Object.keys(MEDIA_TYPES), limit: '80mb' }), (req, res) => {
+  const ext = MEDIA_TYPES[String(req.headers['content-type'] || '').split(';')[0].trim()];
+  if (!ext || !Buffer.isBuffer(req.body) || !req.body.length) return res.status(400).json({ error: 'Nahrajte video (MP4, WEBM, MOV) nebo obrázek (JPG, PNG, WEBP, GIF).' });
+  const name = crypto.randomUUID() + '.' + ext;
+  require('fs').writeFileSync(path.join(store.MEDIA_DIR, name), req.body);
+  res.json({ src: '/media/' + name, kind: ext.match(/mp4|webm|mov/) ? 'video' : 'image' });
+});
+
 app.get('/api/admin/config', requireAdmin, (req, res) => res.json(store.getConfig()));
 
+const clip = (s, n) => String(s || '').trim().slice(0, n);
 const inRange = (v, lo, hi) => typeof v === 'number' && isFinite(v) && v >= lo && v <= hi;
 app.put('/api/admin/config', requireAdmin, (req, res) => {
   const b = req.body || {};
@@ -171,6 +184,10 @@ app.put('/api/admin/config', requireAdmin, (req, res) => {
     maxSetsPerMonth: pick('maxSetsPerMonth', 1, 200),
     fatigueWeeklyPct: pick('fatigueWeeklyPct', 0, 50),
     fatigueStartWeek: pick('fatigueStartWeek', 1, 12),
+    refreshEffPct: pick('refreshEffPct', 0, 100),
+    rules: { ...cur.rules },
+    situations: { ...cur.situations },
+    examples: cur.examples,
     rates: { ...cur.rates },
     markets: { ...cur.markets },
     prices: { ...cur.prices },
@@ -188,6 +205,28 @@ app.put('/api/admin/config', requireAdmin, (req, res) => {
     if (b.rates[k] === undefined) continue;
     if (!inRange(b.rates[k], 0.01, 1000)) errors.push('rates.' + k); else next.rates[k] = b.rates[k];
   }
+  const RULES = { lowSpend: [0, 1e9], lowN: [1, 1000], highSpend: [1, 1e9], highN: [1, 5000], step: [1, 50], smallSpend: [0, 1e9], tinySpend: [0, 1e9], minLive: [0, 500] };
+  if (b.rules) for (const [k, [lo, hi]] of Object.entries(RULES)) {
+    if (b.rules[k] === undefined) continue;
+    if (!inRange(b.rules[k], lo, hi)) errors.push('rules.' + k); else next.rules[k] = b.rules[k];
+  }
+  if (next.rules.highSpend <= next.rules.lowSpend) errors.push('rules.highSpend');
+  if (next.rules.highN < next.rules.lowN) errors.push('rules.highN');
+  if (b.situations) for (const k of ['growth', 'launch']) {
+    if (b.situations[k] === undefined) continue;
+    if (!inRange(b.situations[k], 0.1, 10)) errors.push('situations.' + k); else next.situations[k] = b.situations[k];
+  }
+  if (b.examples !== undefined) {
+    if (!Array.isArray(b.examples) || b.examples.length > 30) errors.push('examples');
+    else {
+      const okUrl = u => typeof u === 'string' && (/^https:\/\/[^\s"'<>]+$/.test(u) || /^\/media\/[a-f0-9-]+\.[a-z0-9]+$/.test(u));
+      next.examples = b.examples.map(x => ({
+        title: clip(x && x.title, 80), client: clip(x && x.client, 80), result: clip(x && x.result, 120),
+        src: okUrl(x && x.src) ? x.src : '', poster: okUrl(x && x.poster) ? x.poster : '',
+        kind: x && (x.kind === 'image' || (x.kind !== 'video' && /\.(jpe?g|png|webp|gif)(\?|$)/i.test(x.src || ''))) ? 'image' : 'video', ratio: ['1:1', '9:16', '4:5', '16:9'].includes(x && x.ratio) ? x.ratio : '9:16'
+      })).filter(x => x.src);
+    }
+  }
   if (next.videosPerSet + next.staticsPerSet < 1) errors.push('perSet');
   if (errors.length) return res.status(400).json({ error: 'Neplatné hodnoty', fields: errors });
   res.json(store.saveConfig(next));
@@ -195,7 +234,6 @@ app.put('/api/admin/config', requireAdmin, (req, res) => {
 
 /* ---------- poptávky ---------- */
 const leadHits = new Map();
-const clip = (s, n) => String(s || '').trim().slice(0, n);
 app.post('/api/leads', requirePublic, async (req, res) => {
   const b = req.body || {};
   if (b.website) return res.json({ ok: true }); // past na roboty
@@ -215,7 +253,7 @@ app.post('/api/leads', requirePublic, async (req, res) => {
   for (const k of ['spend', 'cpa', 'roas', 'current', 'liveNow', 'newAds', 'live', 'sets', 'costAi', 'costClassic']) {
     const v = Number(c[k]); if (isFinite(v)) lead.calc[k] = v;
   }
-  if (typeof c.market === 'string' && /^[a-z]{2}$/.test(c.market)) lead.calc.market = c.market;
+  if (['stable', 'growth', 'launch'].includes(c.sit)) lead.calc.sit = c.sit;
   if (['CZK', 'EUR', 'USD'].includes(c.currency)) lead.calc.currency = c.currency;
   hits.push(now); leadHits.set(req.ip, hits);
   const list = store.getLeads(); list.unshift(lead); store.saveLeads(list);
@@ -224,7 +262,7 @@ app.post('/api/leads', requirePublic, async (req, res) => {
   if (SLACK_WEBHOOK_URL) {
     const f = n => (n ?? 0).toLocaleString('cs-CZ');
     const text = `:sparkles: *Nová poptávka z Creative Scaleru*\n${lead.name} · ${lead.company} · ${lead.email}\n` +
-      `Spend ${f(lead.calc.spend)} Kč/měs. · trh ${(lead.calc.market || 'cz').toUpperCase()} · doporučeno *${f(lead.calc.newAds)} kreativ měsíčně*` +
+      `Spend ${f(lead.calc.spend)} Kč/měs. · ${lead.calc.sit || 'stable'} · doporučeno *${f(lead.calc.newAds)} kreativ měsíčně*` +
       (lead.calc.current ? ` (dnes ${f(lead.calc.current)})` : '');
     fetch(SLACK_WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) })
       .catch(e => console.warn('[creative-scaler] Slack se nepodařilo zavolat:', e.message));
@@ -242,8 +280,8 @@ app.patch('/api/admin/leads/:id', requireAdmin, (req, res) => {
 });
 app.get('/admin/leads.csv', requireAdmin, (req, res) => {
   const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const head = ['datum', 'stav', 'jmeno', 'firma', 'email', 'jazyk', 'trh', 'spend', 'cpa', 'roas', 'dnes_kreativ', 'doporuceno_kreativ', 'zivych_doporuceno', 'naklady_ai', 'naklady_klasika', 'mena_klienta'];
-  const rows = store.getLeads().map(l => [l.createdAt, l.status, l.name, l.company, l.email, l.lang, l.calc.market, l.calc.spend, l.calc.cpa, l.calc.roas, l.calc.current, l.calc.newAds, l.calc.live, l.calc.costAi, l.calc.costClassic, l.calc.currency].map(q).join(','));
+  const head = ['datum', 'stav', 'jmeno', 'firma', 'email', 'jazyk', 'situace', 'spend', 'cpa', 'roas', 'dnes_kreativ', 'doporuceno_kreativ', 'zivych_doporuceno', 'naklady_ai', 'naklady_klasika', 'mena_klienta'];
+  const rows = store.getLeads().map(l => [l.createdAt, l.status, l.name, l.company, l.email, l.lang, l.calc.sit || l.calc.market, l.calc.spend, l.calc.cpa, l.calc.roas, l.calc.current, l.calc.newAds, l.calc.live, l.calc.costAi, l.calc.costClassic, l.calc.currency].map(q).join(','));
   res.set('Content-Type', 'text/csv; charset=utf-8');
   res.set('Content-Disposition', 'attachment; filename="creative-scaler-poptavky.csv"');
   res.send('﻿' + [head.join(','), ...rows].join('\n'));

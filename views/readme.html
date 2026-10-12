@@ -106,14 +106,16 @@
         <span class="eyebrow-lg">Logika</span>
         <h2>Jak se počítá</h2>
         <p>Štítek <span class="tag d">z praxe</span> značí pravidlo z původní tabulky od týmu, štítek <span class="tag p">návrh</span> předpoklad, který jsme doplnili a je potřeba ho odsouhlasit. Všechny hodnoty jdou změnit v adminu v záložce Nastavení.</p>
+        <p><b>Verze 0.5 (říjen 2026)</b> počítá podle návrhu ze zpětné vazby týmu: počet kreativ vychází přímo z rozpočtu, ne z ceny testovací sady. Trh ani CPA počet nemění.</p>
         <ol class="chain">
-          <li><span class="lbl">Rozpočet na testování<span class="src d">z praxe</span></span><span class="val">30 %</span><span class="why">Z měsíčního spendu na Metě (bez katalogu) jde aspoň 30 % na testování nových reklam.</span></li>
-          <li><span class="lbl">Minimum na jednu sadu<span class="src d">z praxe</span></span><span class="val">30 000 Kč</span><span class="why">Sada = skupina reklam, které propagují jednu věc. Na českém trhu potřebuje aspoň 5 000 Kč denně po dobu 6 dní, jinak se nedá férově vyhodnotit. Ostatní trhy jsou zatím <b>návrh</b>.</span></li>
-          <li><span class="lbl">Počet sad<span class="src d">z praxe</span></span><span class="val">300k ÷ 30k = 10</span><span class="why">Rozpočet na testování dělený minimem sady, zaokrouhleno dolů. Případný zbytek se rozdělí mezi sady.</span></li>
-          <li><span class="lbl">Kreativy v sadě<span class="src d">z praxe</span></span><span class="val">3 + 2</span><span class="why">3 videa s různým hookem a 2 statiky, které se liší vizuálem i tématem, ne jen textem. Pět variant je minimum pro test.</span></li>
-          <li><span class="lbl">Nových kreativ měsíčně<span class="src d">z praxe</span></span><span class="val">50</span><span class="why">Počet sad × kreativy v sadě. Při 1 mil. Kč měsíčně: 30 videí a 20 statik.</span></li>
-          <li><span class="lbl">Živých kreativ v účtu<span class="src p">návrh</span></span><span class="val">19</span><span class="why">Kreativy, které právě běží v testu, plus vítězové. Předpoklad: z každé sady vyjde 1 vítěz, který běží zhruba 4 týdny, než se okouká.</span></li>
-          <li><span class="lbl">Týdenní kadence<span class="src p">návrh</span></span><span class="val">12 / týden</span><span class="why">Nové kreativy rozložené rovnoměrně do měsíce, aby účet nikdy nezůstal bez čerstvých variant.</span></li>
+          <li><span class="lbl">Počet podle rozpočtu<span class="src p">návrh</span></span><span class="val">100 tis. = 10 · 1 mil. = 50</span><span class="why">Mezi dvěma kotvami roste počet nových kreativ rovnoměrně s rozpočtem a zaokrouhlí se na celé pětice. 300 tis. Kč = 20 kreativ, 500 tis. Kč = 30.</span></li>
+          <li><span class="lbl">Situace účtu<span class="src p">návrh</span></span><span class="val">1× · 1,5× · 2×</span><span class="why">Stabilní provoz, růst, launch nebo nový směr. Při růstu a launchi se hledá, co funguje, proto víc nových kreativ.</span></li>
+          <li><span class="lbl">Malé rozpočty<span class="src p">návrh</span></span><span class="val">pod 100 tis. / pod 50 tis.</span><span class="why">Pod 100 tis. Kč 1 sada (5 kreativ) měsíčně, pod 50 tis. Kč 1 sada za 2 měsíce.</span></li>
+          <li><span class="lbl">Velké rozpočty<span class="src p">návrh</span></span><span class="val">nad 50 kreativ</span><span class="why">Číslo se ukáže dál podle přímky, klient u něj ale vidí štítek „individuální nabídka“.</span></li>
+          <li><span class="lbl">Kreativy v sadě<span class="src d">z praxe</span></span><span class="val">3 + 2</span><span class="why">3 videa s různým hookem a 2 statiky, které se liší vizuálem i tématem, ne jen textem.</span></li>
+          <li><span class="lbl">Živých kreativ v účtu<span class="src p">návrh</span></span><span class="val">min. 6</span><span class="why">Kreativy v právě běžícím testu plus vítězové (1 ze sady, běží ~4 týdny). Nikdy méně než 6, aby měl algoritmus z čeho vybírat.</span></li>
+          <li><span class="lbl">Únava kreativ<span class="src p">návrh</span></span><span class="val">7 % týdně · obměna 70 %</span><span class="why">Bez obměny zdražuje konverze o 7 % týdně od 3. týdne. Doporučený objem nových kreativ růst zpomalí o 70 % (i s testováním tedy cena mírně roste). Když klient vyplní, kolik kreativ přidává dnes, druhá křivka ukazuje jeho dnešní tempo.</span></li>
+          <li><span class="lbl">CPA a ROAS<span class="src p">návrh</span></span><span class="val">jen informace</span><span class="why">Přepočet na konverze a tržby a o kolik klient přijde únavou. Na počet kreativ vliv nemají.</span></li>
         </ol>
       </section>
 
@@ -123,10 +125,11 @@
         <div class="tbl-wrap"><table class="plain">
           <thead><tr><th>Sekce</th><th>Co ukazuje</th><th>Proč tam je</th></tr></thead>
           <tbody>
-            <tr><td><b>Kalkulačka</b></td><td>Klient zadá rozpočet (měsíčně nebo denně, v CZK, EUR nebo USD), trh a volitelně CPA nebo počet konverzí, ROAS a kolik kreativ má dnes.</td><td>Čím víc vlastních čísel zadá, tím osobnější a přesvědčivější výsledek.</td></tr>
+            <tr><td><b>Kalkulačka</b></td><td>Klient zadá rozpočet bez katalogových kampaní (měsíčně nebo denně, v CZK, EUR nebo USD), situaci účtu a volitelně CPA nebo počet konverzí, ROAS a kolik kreativ má dnes.</td><td>Čím víc vlastních čísel zadá, tím osobnější a přesvědčivější výsledek.</td></tr>
             <tr><td><b>Výsledek</b></td><td>Nových kreativ měsíčně, živých v účtu, kolik týdně a kolik testovacích sad.</td><td>Hlavní číslo, kvůli kterému to celé je.</td></tr>
             <tr><td><b>„Potřebujete X× víc“</b></td><td>Porovnání s tím, kolik kreativ klient přidává dnes.</td><td>Nejsilnější obchodní argument: klient na vlastních číslech vidí, jak moc zaostává.</td></tr>
-            <tr><td><b>Kolik to stojí</b></td><td>Měsíční cena výroby AI oproti klasické produkci a úspora. S ROAS i jako podíl z tržeb.</td><td>Odpovídá na první námitku „to bude drahé“ a vede k AI videím.</td></tr>
+            <tr><td><b>Kolik to stojí</b></td><td>Měsíční cena výroby s AI jako podíl z rozpočtu (s ROAS z tržeb). Srovnání s klasickou produkcí vidí jen admin.</td><td>Odpovídá na námitku „to bude drahé“, ale nepůsobí jako teleshopping.</td></tr>
+            <tr><td><b>Ukázky</b></td><td>Videa a obrázky AI kreativ, které nahrajete v adminu v Nastavení. Bez ukázek se sekce neukazuje.</td><td>Klient vidí, za jakou kvalitu platí.</td></tr>
             <tr><td><b>Co se stane bez nových kreativ</b></td><td>Graf, jak zdražuje konverze, když se kreativy neobměňují. Pod ním o kolik konverzí a tržeb klient za 12 týdnů přijde.</td><td>Ukazuje cenu nečinnosti. Ztracené tržby porovnává s cenou AI kreativ za stejné období.</td></tr>
             <tr><td><b>Plán na měsíc</b></td><td>Dlaždice po týdnech: každý blok je jedna sada, oranžová/zelená = video, bílá = statika.</td><td>Objem je hned vidět, ne jen jako číslo.</td></tr>
             <tr><td><b>Chci kreativy</b></td><td>Formulář s jménem, firmou a e-mailem.</td><td>Poptávka se uloží do adminu i s výpočtem klienta.</td></tr>
@@ -139,7 +142,7 @@
         <h2>Admin: tři záložky</h2>
         <div class="grid2">
           <div class="box"><h3>Kalkulačka</h3><p>Totéž co klient vidí, plus demo účty, úprava předpokladů jen pro daný výpočet, rozpis výpočtu krok po kroku a zadání do výroby.</p></div>
-          <div class="box"><h3>Nastavení</h3><p>Pravidla výpočtu, strop sad, odhad únavy kreativ, kurzy měn, ceník produkce a minimální budgety trhů. Po uložení je veřejná část hned převezme.</p></div>
+          <div class="box"><h3>Nastavení</h3><p>Kotvy pro počet kreativ, situace účtu, odhad únavy kreativ, kurzy měn, ceník produkce a ukázky AI kreativ. Po uložení je veřejná část hned převezme.</p></div>
           <div class="box"><h3>Poptávky</h3><p>Odeslané formuláře s výpočtem klienta. Jde je označit jako vyřízené a stáhnout do CSV. S nastaveným Slack webhookem chodí i do Slacku.</p></div>
           <div class="box"><h3>Poslat klientovi</h3><p>Karta v Kalkulačce vytvoří odkaz na veřejnou část s čísly klienta, zvoleným jazykem a měnou. Přenese i upravené předpoklady, takže klient uvidí přesně totéž co vy.</p></div>
         </div>
@@ -151,14 +154,13 @@
         <span class="eyebrow-lg">Nad rámec zadání</span>
         <h2>Co jsme domysleli navíc a proč</h2>
         <div class="grid2">
-          <div class="box"><h3>Strop sad u velkých rozpočtů</h3><p>Nad 20 sadami měsíčně se další sady nepřidávají, jen dostane každá víc peněz.</p><p class="why">Bez toho by 5 mil. Kč vedlo na 250 kreativ měsíčně, což klient vezme jako nesmysl.</p></div>
-          <div class="box"><h3>Malé rozpočty</h3><p>Když nestačí ani na jednu plnou sadu, kalkulačka doporučí 1 sadu (u velmi malých jen 3 kreativy) a řekne, od jaké částky test funguje naplno.</p><p class="why">Menší klient nedostane nulu, ale začátek spolupráce.</p></div>
+          <div class="box"><h3>Situace účtu</h3><p>Přepínač stabilní provoz / růst / launch násobí doporučený počet.</p><p class="why">Návrh Šimona: stejný rozpočet potřebuje při launchi víc testování než stabilní účet.</p></div>
+          <div class="box"><h3>Malé rozpočty</h3><p>Rychlé volby začínají od 30 tis. Kč. Pod 100 tis. Kč 1 sada měsíčně, pod 50 tis. Kč 1 sada za 2 měsíce.</p><p class="why">Kuba: menší klienti dávají do Mety i méně než 50 tis. Kč.</p></div>
           <div class="box"><h3>Únava kreativ a ROAS</h3><p>Graf a výpočet ztracených konverzí a tržeb za 12 týdnů. Odhad zdražení (7 % týdně od 3. týdne) se nastavuje v adminu.</p><p class="why">Dává důvod jednat hned a ROAS díky němu má konkrétní smysl.</p></div>
           <div class="box"><h3>CPA, nebo konverze</h3><p>Klient vyplní, co zná, druhé se dopočítá. Při změně rozpočtu zůstává CPA stejné.</p><p class="why">Andrej chtěl konverze jako vstup a ne každý klient zná CPA.</p></div>
           <div class="box"><h3>Denní i měsíční spend</h3><p>Přepínač měsíčně / denně.</p><p class="why">Andrejův požadavek. Hodně klientů uvažuje v denním budgetu.</p></div>
           <div class="box"><h3>Měny a jazyky</h3><p>CZK, EUR, USD a čeština, slovenština, angličtina. Počítá se v korunách, kurzy jsou v adminu.</p><p class="why">MAIRA má klienty na více trzích.</p></div>
           <div class="box"><h3>Fáze učení jen interně</h3><p>Upozornění, že sada nenasbírá ~50 konverzí týdně, vidí jen admin.</p><p class="why">Klientovi by zpochybnilo vlastní doporučení.</p></div>
-          <div class="box"><h3>Trhy a „ověřeno“</h3><p>Každý trh má vlastní minimum sady. Neověřené trhy mají v rozpisu štítek návrh.</p><p class="why">Minimum 5 000 Kč denně platí pro Česko, jinde je jiná cena reklamy.</p></div>
         </div>
       </section>
 
@@ -168,7 +170,7 @@
         <ul class="todo">
           <li><b>Ceník produkce</b> je ukázkový. Doplnit skutečné ceny v Nastavení a vypnout štítek „Orientační ceny“.</li>
           <li><b>Odhad únavy kreativ</b> (7 % týdně od 3. týdne) nahradit daty z účtů MAIRA.</li>
-          <li><b>Minimální budgety trhů</b> mimo Česko ověřit a zaškrtnout „Ověřeno“.</li>
+          <li><b>Ukázky AI kreativ</b> nahrát v Nastavení (ideálně s výsledkem, např. case study). Dokud tam nic není, sekce se klientům neukazuje.</li>
           <li><b>Demo účty</b> v adminu jsou vymyšlené. Další krok: načítat spend, CPA, ROAS a počet reklam přímo z Meta účtu klienta.</li>
           <li><b>Slack webhook</b> pro poptávky zatím není nastavený.</li>
           <li><b>Písmo</b>: místo PP Neue Corp Compact (web MAIRA) se zatím zobrazuje podobné Archivo.</li>
@@ -181,11 +183,10 @@
         <span class="eyebrow-lg">K odsouhlasení</span>
         <h2>Otázky pro tým</h2>
         <ol>
-          <li>Sedí předpoklad 1 vítěz ze sady, který běží ~4 týdny?</li>
-          <li>Je strop 20 sad měsíčně rozumný, nebo má být jiný?</li>
-          <li>Jaká je reálná míra únavy kreativ podle našich dat?</li>
-          <li>Jaké jsou minimální denní budgety sady pro SK, PL, HU, DE a AT?</li>
-          <li>Ukazovat klientovi i klasickou produkci, nebo jen AI?</li>
+          <li>Sedí kotvy 100 tis. = 10 a 1 mil. = 50 kreativ a násobky 1,5× a 2× pro růst a launch?</li>
+          <li>Sedí předpoklad 1 vítěz ze sady, který běží ~4 týdny, a minimum 6 živých reklam?</li>
+          <li>Jaká je reálná míra únavy kreativ a účinnost obměny podle našich dat?</li>
+          <li>Které ukázky AI kreativ a case study do veřejné části dáme?</li>
           <li>Kdo bude poptávky z formuláře vyřizovat a kam mají chodit?</li>
         </ol>
       </section>

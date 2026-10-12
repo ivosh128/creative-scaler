@@ -6,8 +6,8 @@ Aplikace má dvě části:
 
 | Část | Adresa | Pro koho | Co tam je |
 |---|---|---|---|
-| **Veřejná** | `/` | klienti | kalkulačka, náklady AI vs. klasika, graf únavy kreativ, měsíční plán, poptávkový formulář, jazyky CZ/SK/EN |
-| **Admin** | `/admin` | tým | celá kalkulačka s předpoklady a rozpisem výpočtu, demo účty, generátor názvů kreativ do výroby, odkaz pro klienta, **nastavení** (ceník, pravidla, budgety trhů) a **poptávky** |
+| **Veřejná** | `/` | klienti | kalkulačka, náklady na AI produkci, ukázky AI kreativ, graf únavy kreativ, měsíční plán, poptávkový formulář, jazyky CZ/SK/EN |
+| **Admin** | `/admin` | tým | celá kalkulačka s předpoklady a rozpisem výpočtu, demo účty, generátor názvů kreativ do výroby, odkaz pro klienta, **nastavení** (ceník, pravidla, ukázky) a **poptávky** |
 
 Návod pro kolegy (bez technických detailů) je přímo v aplikaci na adrese **/READ_ME**.
 
@@ -67,23 +67,24 @@ Otevřete http://localhost:3000 (heslo `demo`) a http://localhost:3000/admin (he
 - **Demo účty** v adminu jsou vymyšlené. Další krok je načítat spend, CPA, ROAS a počet reklam přímo z Meta účtu klienta.
 - **Graf únavy kreativ** je ilustrační křivka (bez obměny +7 % týdně od 3. týdne). Nahradit daty z účtů MAIRA.
 - **Ceník** je ukázkový. Přepište ho v Nastavení a vypněte volbu „Ceny jsou orientační“.
-- **Budgety trhů** mimo Česko jsou návrh. Po ověření je v Nastavení zaškrtněte jako ověřené.
+- **Ukázky AI kreativ** zatím chybí. Nahrajte je v Nastavení.
 
-## Jak výpočet funguje
+## Jak výpočet funguje (verze 0.5)
 
-1. Z měsíčního spendu jde výchozích 30 % na testování.
-2. Jedna testovací sada potřebuje minimálně denní budget trhu × délka testu (CZ: 5 000 Kč × 6 dní = 30 000 Kč). Volitelně se minimum zvedne podle CPA, aby sada nasbírala ~50 konverzí týdně.
-3. Počet sad = rozpočet na testování ÷ minimum sady, zaokrouhleno dolů. Celý rozpočet na testování se pak rozdělí mezi sady.
-4. **Velký rozpočet:** nad stropem sad (výchozí 20 měsíčně) se už další sady nepřidávají, ale každá dostane víc peněz.
-5. **Malý rozpočet:** když nestačí ani na jednu plnou sadu, doporučí se 1 sada s nižším denním budgetem. Pod polovinou minima má menší složení (2 videa + 1 statika).
-6. Každá sada má 5 kreativ: 3 videa s různým hookem a 2 odlišné statiky.
-7. Živé kreativy = kreativy v právě běžících testech + vítězové (1 ze sady, běží ~4 týdny).
-8. **Únava kreativ:** bez obměny zdražuje konverze o 7 % týdně od 3. týdne. Z toho se počítá, o kolik konverzí a (s ROAS) o kolik tržeb klient za 12 týdnů přijde, v porovnání s cenou AI kreativ za stejné období.
-9. **ROAS** kromě toho ukazuje náklady na kreativy jako podíl z tržeb, ne jen z mediálního rozpočtu.
+Podle zpětné vazby týmu (Šimon, Kuba, Filip – Asana, říjen 2026):
 
-Klient může zadat CPA, nebo počet konverzí (druhé se dopočítá), spend měsíčně i denně a měnu CZK, EUR nebo USD. Vše se počítá v Kč, kurzy se nastavují v adminu.
+1. Počet nových kreativ měsíčně vychází přímo z rozpočtu bez katalogu: přímka mezi kotvami **100 tis. Kč = 10** a **1 mil. Kč = 50** kreativ, zaokrouhleno po 5.
+2. **Situace účtu** násobí výsledek: stabilní provoz 1×, růst 1,5×, launch / nový směr 2×.
+3. **Malé rozpočty:** pod 100 tis. Kč 1 sada (5 kreativ) měsíčně, pod 50 tis. Kč 1 sada za 2 měsíce.
+4. **Nad 50 kreativ** se číslo počítá dál, ale klient vidí štítek „individuální nabídka“.
+5. Sada má 5 kreativ: 3 videa s různým hookem a 2 odlišné statiky.
+6. Živé kreativy = kreativy v právě běžících testech + vítězové (1 ze sady, ~4 týdny), **minimálně 6**.
+7. **Únava kreativ:** bez obměny zdražuje konverze o 7 % týdně od 3. týdne. Doporučený objem tento růst tlumí o 70 %, menší objem úměrně méně. Když klient vyplní dnešní počet kreativ, druhá křivka ukazuje jeho dnešní tempo.
+8. **CPA a ROAS** počet kreativ neovlivňují, slouží jen k přepočtu na konverze, tržby a ztrátu z únavy. Trh se už nevybírá.
+9. Veřejná část ukazuje jen cenu AI produkce. Srovnání s klasickou produkcí je jen v adminu.
+10. **Ukázky AI kreativ** se nahrávají v adminu v Nastavení (soubory jdou na volume do `DATA_DIR/media`). Bez ukázek se sekce neukazuje.
 
-Všechny hodnoty z bodů 1, 2, 4, 6, 7, 8 i ceník a kurzy jdou změnit v adminu v Nastavení. Odkaz pro klienta z adminu přenáší i předpoklady upravené jen pro daný výpočet, takže klient vidí stejná čísla.
+Všechny kotvy, násobky, minimum živých reklam, únava i ceník jdou změnit v adminu v Nastavení.
 
 ## Struktura
 
