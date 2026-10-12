@@ -80,7 +80,9 @@ Podle zpětné vazby týmu (Šimon, Kuba, Filip – Asana, říjen 2026):
 5. Sada má 5 kreativ: 3 videa s různým hookem a 2 odlišné statiky.
 6. Živé kreativy = kreativy v právě běžících testech + vítězové (1 ze sady, ~4 týdny), **minimálně 6**.
 7. **Únava kreativ:** bez obměny zdražuje konverze o 7 % týdně od 3. týdne. Doporučený objem tento růst tlumí o 70 %, menší objem úměrně méně. Když klient vyplní dnešní počet kreativ, druhá křivka ukazuje jeho dnešní tempo.
-8. **CPA a ROAS** počet kreativ neovlivňují, slouží jen k přepočtu na konverze, tržby a ztrátu z únavy. Trh se už nevybírá.
+8. **CPA a ROAS** počet kreativ neovlivňují, slouží jen k přepočtu na konverze, tržby a ztrátu z únavy. Trh se už nevybírá. Pravidlo „~50 konverzí týdně na sadu“ je zrušené; pod 10 konverzí na kreativu v testu dostane klient neutrální tip.
+8b. **Rozpočet na kreativu** = 30 % spendu ÷ počet nových kreativ (jen informace).
+8c. **Tipy místo varování:** rozpočet pod 20 tis. Kč, pod 50 tis. Kč pomalejší rytmus, nad 50 kreativ individuálně, výroba nad 35 % rozpočtu.
 9. Veřejná část ukazuje jen cenu AI produkce. Srovnání s klasickou produkcí je jen v adminu.
 10. **Ukázky AI kreativ** se nahrávají v adminu v Nastavení (soubory jdou na volume do `DATA_DIR/media`). Bez ukázek se sekce neukazuje.
 

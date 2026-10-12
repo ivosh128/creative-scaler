@@ -205,7 +205,7 @@ app.put('/api/admin/config', requireAdmin, (req, res) => {
     if (b.rates[k] === undefined) continue;
     if (!inRange(b.rates[k], 0.01, 1000)) errors.push('rates.' + k); else next.rates[k] = b.rates[k];
   }
-  const RULES = { lowSpend: [0, 1e9], lowN: [1, 1000], highSpend: [1, 1e9], highN: [1, 5000], step: [1, 50], smallSpend: [0, 1e9], tinySpend: [0, 1e9], minLive: [0, 500] };
+  const RULES = { lowSpend: [0, 1e9], lowN: [1, 1000], highSpend: [1, 1e9], highN: [1, 5000], step: [1, 50], smallSpend: [0, 1e9], tinySpend: [0, 1e9], minLive: [0, 500], under20: [0, 1e9], costWarnPct: [1, 1000], lowConv: [0, 1000] };
   if (b.rules) for (const [k, [lo, hi]] of Object.entries(RULES)) {
     if (b.rules[k] === undefined) continue;
     if (!inRange(b.rules[k], lo, hi)) errors.push('rules.' + k); else next.rules[k] = b.rules[k];

@@ -67,7 +67,6 @@
     last = calc(read());
     render(last, {
       internal: true,
-      cpaHint: ' Sada možná nenasbírá dost dat, zvažte delší test nebo méně sad s vyšším budgetem.',
       dailyHint: R => `≈ ${kc(R.S.spend / CS.DPM)} denně, z toho ${kc(R.testBudget / CS.DPM)} na testování`
     });
     $('pricesBadge').hidden = !cfg.pricesAreDemo;
@@ -88,7 +87,9 @@
       ['Nových kreativ měsíčně', fmt(R.newAds, 1), countWhy, 'p'],
       ['Testovacích sad měsíčně', fmt(R.sets, 1), `Nové kreativy po ${R.perSet} v sadě.`, 'd'],
       ['Kreativ v sadě', `${R.perSet} (${S.vid} + ${S.stat})`, `${S.vid}× video s různým hookem nebo verzí, ${S.stat}× statika, která se liší vizuálem i tématem, ne jen textem.`, 'd'],
-      ['Budget jedné sady', kc(R.setBudget), `${fmt(S.pct * 100)} % spendu na testování (${kc(R.testBudget)}) děleno počtem sad. Jen informace, počet kreativ to nemění.`, 'p'],
+      ['Budget na jednu kreativu', kc(R.perCreative), `${fmt(S.pct * 100)} % spendu na testování (${kc(R.testBudget)}) děleno počtem nových kreativ. Sada tak dostane ${kc(R.setBudget)}. Víc kreativ ze stejného rozpočtu znamená méně peněz na každou, počet kreativ to ale nemění.`, 'p'],
+      ['Konverzí na kreativu v testu', S.cpa > 0 ? fmt(R.convPerCreative, 1) : 'zadejte CPA', S.cpa > 0 ? `Budget na kreativu ÷ CPA ${kc(S.cpa)}. Pravidlo „sada musí nasbírat ~50 konverzí týdně“ jsme zrušili: menší účty ho často nedosáhnou a test funguje i tak. Pod ${fmt(R.rules.lowConv)} konverzí dostane klient neutrální tip, že vítěze potvrdíme na konverzích za delší období.` : 'CPA počet kreativ nemění, slouží jen k odhadu, kolik dat test nasbírá.', 'p'],
+      ['Výroba AI', kc(R.costAi), `${fmt(R.costShare * 100, 1)} % rozpočtu. Nad ${fmt(R.rules.costWarnPct)} % dostane klient jemný tip, že rozsah výroby umíme přizpůsobit.`, 'p'],
       ['Týdenní kadence', `${fmt(R.perWeek, 1)} / týden`, 'Nové kreativy rozložené rovnoměrně do měsíce.', 'p'],
       ['Živých kreativ v účtu', fmt(R.live), `Zhruba ${fmt(R.liveTest)} právě v testu a ${fmt(R.liveWin)} vítězů, z nichž každý jede asi ${fmt(S.life)} týdny.` + (R.liveRaised ? ` Výpočet dává ${fmt(R.liveCalc, 1)}, doporučujeme ale minimum ${fmt(r.minLive)}.` : ''), 'p'],
       ['Únava kreativ', `${fmt(R.fatigue.f * 100, 1)} % týdně`, `Bez obměny zdražuje konverze od ${R.fatigue.start}. týdne. Doporučený objem ji tlumí o ${fmt(R.fatigue.eff * 100)} %, menší objem úměrně méně.`, 'p']

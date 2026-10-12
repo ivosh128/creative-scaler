@@ -18,7 +18,7 @@ const DEFAULT_CONFIG = {
   fatigueStartWeek: 3,
   refreshEffPct: 70,   // o kolik % doporučená obměna kreativ tlumí únavu
   // počet nových kreativ podle rozpočtu: přímka mezi dvěma kotvami, zaokrouhleno na schůdky
-  rules: { lowSpend: 100000, lowN: 10, highSpend: 1000000, highN: 50, step: 5, smallSpend: 100000, tinySpend: 50000, minLive: 6 },
+  rules: { lowSpend: 100000, lowN: 10, highSpend: 1000000, highN: 50, step: 5, smallSpend: 100000, tinySpend: 50000, minLive: 6, under20: 20000, costWarnPct: 35, lowConv: 10 },
   situations: { growth: 1.5, launch: 2 },
   // ukázky AI kreativ ve veřejné části: { title, client, result, src, poster, kind: 'video'|'image', ratio: '1:1'|'9:16'|'4:5'|'16:9' }
   examples: [],

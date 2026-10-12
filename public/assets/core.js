@@ -7,6 +7,8 @@ window.CS = (function () {
   const CURRENCIES = ['CZK', 'EUR', 'USD'];
   // rychlé volby rozpočtu v „kulatých“ částkách dané měny
   const PRESETS = { CZK: [30000, 100000, 300000, 1000000, 3000000], EUR: [1500, 5000, 15000, 50000, 120000], USD: [1500, 5000, 15000, 50000, 120000] };
+  // denní rychlé volby (v dané měně za den)
+  const PRESETS_DAY = { CZK: [1000, 3000, 10000, 30000, 100000], EUR: [50, 150, 500, 1500, 4000], USD: [50, 150, 500, 1500, 4000] };
 
   const I = {
     cs: {
@@ -28,14 +30,12 @@ window.CS = (function () {
       new_small: 'Při tomto rozpočtu stačí {n} s {per} kreativami měsíčně.',
       new_none: 'Zadejte rozpočet a hned uvidíte doporučení.',
       set_forms: ['testovací sada', 'testovací sady', 'testovacích sad'],
-      week_s: 'nových kreativ, zhruba {n} sady týdně', week_s0: 'nových kreativ', sets_s: 'měsíčně, každá za {b}', sets_s0: 'měsíčně',
+      week_s: 'nových kreativ, zhruba {n} sady týdně', week_s0: 'nových kreativ', sets_s: 'měsíčně, každá za {b}, tedy ≈ {c} na kreativu', sets_s0: 'měsíčně',
       gap_more: 'Dnes přidáváte {c} kreativ měsíčně. Pro tento rozpočet jich potřebujete {n}, tedy o {d} víc.',
       gap_ok: 'S {c} kreativami měsíčně pokrýváte doporučený objem {n}.',
       al_small: 'Na plnohodnotný test je potřeba {m} na sadu. Vaše sada dostane {b} ({d} denně), takže výsledky budou orientační. Naplno test funguje od {s} měsíčně.',
       al_cap: 'U takového rozpočtu už nepřidáváme další sady. Místo toho dostane každá z {n} sad víc peněz ({b}), aby test rychleji ukázal vítěze.',
       al_cpa_pub: 'Při CPA {c} přinese rozpočet zhruba {m} konverzí měsíčně.',
-      al_cpa: 'Při CPA {c} přinese rozpočet zhruba {m} konverzí měsíčně. Jedna sada nasbírá během testu asi {s} konverzí, tedy {w} týdně.',
-      al_cpa_low: ' To je pod hranicí ~50 týdně, kdy Meta obvykle opouští fázi učení.',
       al_roas: 'Při ROAS {r} odpovídá tento spend tržbám z Mety kolem {t} měsíčně.',
       al_live: 'V účtu dnes běží {a} reklam, doporučeno je {b}.',
       cost_eyebrow: 'Náklady na výrobu', cost_h: 'Kolik to stojí', prices_demo: 'Orientační ceny',
@@ -78,7 +78,8 @@ window.CS = (function () {
       ind_badge: 'individuální nabídka',
       plan_tiny: 'Při tomto rozpočtu se nová sada spouští každý druhý měsíc, mezi tím běží vítězové z minulého testu.',
       big_k_tiny: 'Nových kreativ každé 2 měsíce', sets_tiny: 'za 2 měsíce',
-      cost_split_tiny: '{v} videí a {s} statik jednou za 2 měsíce, cena rozpočítaná na měsíc'
+      cost_split_tiny: '{v} videí a {s} statik jednou za 2 měsíce, cena rozpočítaná na měsíc',
+      al_cpa_conv: 'Při CPA {c} vychází na jednu kreativu během testu jen kolem {n} konv. Nevadí to: měkké metriky (CTR, hook rate, přidání do košíku) poslouží jako první síto a vítěze potvrdíme na konverzích za delší období.', al_under20: 'Pod {s} měsíčně má Meta na testování málo dat. Doporučujeme držet rozpočet v jedné kampani a novou sadu kreativ přidávat jednou za 2 měsíce.', al_cost: 'Výroba vychází na {p} % mediálního rozpočtu. U menších rozpočtů je poměr vyšší. Rozsah výroby umíme přizpůsobit, ozvěte se a navrhneme to.', plan_gap: 'Týdny bez nové sady běží na vítězích z předchozích testů.'
     },
     sk: {
       eyebrow_hero: 'Kalkulačka kreatív pre Meta Ads', h1a: 'Koľko kreatív', h1b: 'naozaj', h1c: 'potrebujete?',
@@ -99,14 +100,12 @@ window.CS = (function () {
       new_small: 'Pri tomto rozpočte stačí {n} s {per} kreatívami mesačne.',
       new_none: 'Zadajte rozpočet a hneď uvidíte odporúčanie.',
       set_forms: ['testovacia sada', 'testovacie sady', 'testovacích sád'],
-      week_s: 'nových kreatív, zhruba {n} sady týždenne', week_s0: 'nových kreatív', sets_s: 'mesačne, každá za {b}', sets_s0: 'mesačne',
+      week_s: 'nových kreatív, zhruba {n} sady týždenne', week_s0: 'nových kreatív', sets_s: 'mesačne, každá za {b}, teda ≈ {c} na kreatívu', sets_s0: 'mesačne',
       gap_more: 'Dnes pridávate {c} kreatív mesačne. Pre tento rozpočet ich potrebujete {n}, teda o {d} viac.',
       gap_ok: 'S {c} kreatívami mesačne pokrývate odporúčaný objem {n}.',
       al_small: 'Na plnohodnotný test treba {m} na sadu. Vaša sada dostane {b} ({d} denne), takže výsledky budú orientačné. Naplno test funguje od {s} mesačne.',
       al_cap: 'Pri takom rozpočte už nepridávame ďalšie sady. Namiesto toho dostane každá z {n} sád viac peňazí ({b}), aby test rýchlejšie ukázal víťaza.',
       al_cpa_pub: 'Pri CPA {c} prinesie rozpočet zhruba {m} konverzií mesačne.',
-      al_cpa: 'Pri CPA {c} prinesie rozpočet zhruba {m} konverzií mesačne. Jedna sada nazbiera počas testu asi {s} konverzií, teda {w} týždenne.',
-      al_cpa_low: ' To je pod hranicou ~50 týždenne, keď Meta zvyčajne opúšťa fázu učenia.',
       al_roas: 'Pri ROAS {r} zodpovedá tento spend tržbám z Mety okolo {t} mesačne.',
       al_live: 'V účte dnes beží {a} reklám, odporúčaných je {b}.',
       cost_eyebrow: 'Náklady na výrobu', cost_h: 'Koľko to stojí', prices_demo: 'Orientačné ceny',
@@ -149,7 +148,8 @@ window.CS = (function () {
       ind_badge: 'individuálna ponuka',
       plan_tiny: 'Pri tomto rozpočte sa nová sada spúšťa každý druhý mesiac, medzitým bežia víťazi z minulého testu.',
       big_k_tiny: 'Nových kreatív každé 2 mesiace', sets_tiny: 'za 2 mesiace',
-      cost_split_tiny: '{v} videí a {s} statík raz za 2 mesiace, cena rozpočítaná na mesiac'
+      cost_split_tiny: '{v} videí a {s} statík raz za 2 mesiace, cena rozpočítaná na mesiac',
+      al_cpa_conv: 'Pri CPA {c} vychádza na jednu kreatívu počas testu len okolo {n} konv. Nevadí to: mäkké metriky (CTR, hook rate, pridanie do košíka) poslúžia ako prvé sito a víťaza potvrdíme na konverziách za dlhšie obdobie.', al_under20: 'Pod 20 tis. Kč mesačne má Meta na testovanie málo dát. Odporúčame držať rozpočet v jednej kampani a nové kreatívy pridávať po jednej sade.', al_cost: 'Výroba vychádza na {p} % mediálneho rozpočtu. Pri menších rozpočtoch je pomer vyšší. Rozsah výroby vieme prispôsobiť, ozvite sa a navrhneme to.', plan_gap: 'Týždne bez novej sady bežia na víťazoch z predchádzajúcich testov.'
     },
     en: {
       eyebrow_hero: 'Creative calculator for Meta Ads', h1a: 'How many creatives', h1b: 'do you really', h1c: 'need?',
@@ -170,14 +170,12 @@ window.CS = (function () {
       new_small: 'At this budget {n} of {per} creatives a month is enough.',
       new_none: 'Enter a budget to see the recommendation.',
       set_forms: ['test set', 'test sets', 'test sets'],
-      week_s: 'new creatives, about {n} sets a week', week_s0: 'new creatives', sets_s: 'a month, {b} each', sets_s0: 'a month',
+      week_s: 'new creatives, about {n} sets a week', week_s0: 'new creatives', sets_s: 'a month, {b} each, about {c} per creative', sets_s0: 'a month',
       gap_more: 'You add {c} creatives a month today. This budget needs {n}, that is {d} more.',
       gap_ok: 'With {c} creatives a month you cover the recommended {n}.',
       al_small: 'A full test needs {m} per set. Your set gets {b} ({d} a day), so results will be indicative. The test works fully from {s} a month.',
       al_cap: 'At this budget we stop adding sets. Instead, each of the {n} sets gets more money ({b}) so the test finds a winner faster.',
       al_cpa_pub: 'At a CPA of {c} the budget brings about {m} conversions a month.',
-      al_cpa: 'At a CPA of {c} the budget brings about {m} conversions a month. One set collects about {s} conversions during the test, {w} a week.',
-      al_cpa_low: ' That is below the ~50 a week at which Meta usually exits the learning phase.',
       al_roas: 'At a ROAS of {r} this spend matches about {t} of monthly revenue from Meta.',
       al_live: 'The account runs {a} ads today, {b} are recommended.',
       cost_eyebrow: 'Production cost', cost_h: 'What it costs', prices_demo: 'Indicative prices',
@@ -220,7 +218,8 @@ window.CS = (function () {
       ind_badge: 'custom offer',
       plan_tiny: 'At this budget a new set launches every other month; in between, the winners from the last test keep running.',
       big_k_tiny: 'New creatives every 2 months', sets_tiny: 'every 2 months',
-      cost_split_tiny: '{v} videos and {s} statics every 2 months, cost spread per month'
+      cost_split_tiny: '{v} videos and {s} statics every 2 months, cost spread per month',
+      al_cpa_conv: 'At a CPA of {c} each creative collects only about {n} conversions during the test. That is fine: soft metrics (CTR, hook rate, add to cart) work as the first filter and we confirm winners on conversions over a longer period.', al_under20: 'Below {s} a month Meta has little data for testing. We recommend keeping the budget in one campaign and adding a new set of creatives every 2 months.', al_cost: 'Production comes to {p}% of the media budget. With smaller budgets the ratio is higher. We can adjust the production scope; get in touch and we will propose it.', plan_gap: 'Weeks without a new set run on winners from earlier tests.'
     }
   };
 
@@ -274,7 +273,7 @@ window.CS = (function () {
         sit ('stable'|'growth'|'launch'), mult{growth, launch}, rules{lowSpend, lowN, highSpend, highN, step, smallSpend, tinySpend, minLive},
         prices{}, fatigue{pct, start, eff} */
   function calc(S) {
-    const r = Object.assign({ lowSpend: 100000, lowN: 10, highSpend: 1000000, highN: 50, step: 5, smallSpend: 100000, tinySpend: 50000, minLive: 6 }, S.rules || {});
+    const r = Object.assign({ lowSpend: 100000, lowN: 10, highSpend: 1000000, highN: 50, step: 5, smallSpend: 100000, tinySpend: 50000, minLive: 6, under20: 20000, costWarnPct: 35, lowConv: 10 }, S.rules || {});
     const sit = SITUATIONS.includes(S.sit) ? S.sit : 'stable';
     const m = Object.assign({ growth: 1.5, launch: 2 }, S.mult || {});
     const factor = sit === 'stable' ? 1 : (Number(m[sit]) || 1);
@@ -303,6 +302,9 @@ window.CS = (function () {
     const live = S.spend > 0 ? Math.max(r.minLive, Math.round(liveCalc)) : 0;
     const liveRaised = S.spend > 0 && Math.round(liveCalc) < r.minLive;
     const perWeek = newAds / WPM;
+    // 30 % na testy určuje jen to, kolik peněz dostane každá kreativa (ne kolik jich bude)
+    const perCreative = newAds > 0 ? testBudget / newAds : 0;
+    const convPerCreative = S.cpa > 0 && perCreative > 0 ? perCreative / S.cpa : 0;
     const p = S.prices || {};
     const costAi = nV * (p.aiVideo || 0) + nS * (p.aiStatic || 0);
     const costClassic = nV * (p.classicVideo || 0) + nS * (p.classicStatic || 0);
@@ -329,7 +331,8 @@ window.CS = (function () {
     const lostRevenue = S.roas > 0 ? Math.max(0, W * S.roas * (convRatioWith - convRatioWithout)) : 0;
     const aiCost12w = costAi * FAT_WEEKS / WPM;
 
-    return { S, rules: r, sit, factor, base, vid, stat, perSet, testBudget, mode, individual, setBudget, setDaily, sets, newAds, nV, nS,
+    const costShare = S.spend > 0 ? costAi / S.spend : 0;
+    return { S, rules: r, sit, factor, base, vid, stat, perSet, testBudget, perCreative, convPerCreative, costShare, mode, individual, setBudget, setDaily, sets, newAds, nV, nS,
       concurrent, liveTest, liveWin, liveCalc, live, liveRaised, perWeek, costAi, costClassic, conv, revenue,
       fatigue: { f, start, eff, withIdx, withoutIdx, lostPct, lostConv, lostRevenue, aiCost12w, hasCurrent: S.current > 0 } };
   }
@@ -396,7 +399,7 @@ window.CS = (function () {
       const body = n === 0 ? '<span class="empty">–</span>' : setHtml.repeat(shown) + (n > shown ? `<span class="more">+${n - shown}</span>` : '');
       return `<div class="week"><div class="wh"><span class="wl">${esc(t('week'))} ${w + 1}</span><span class="wc">${fmt(n * R.perSet)}</span></div><div class="sets">${body}</div></div>`;
     }).join('');
-    const pn = $('planNote'); if (pn) { pn.hidden = R.mode !== 'tiny'; pn.textContent = R.mode === 'tiny' ? t('plan_tiny') : ''; }
+    const pn = $('planNote'); if (pn) { const gap = R.mode !== 'tiny' && per.some(n => n === 0); pn.hidden = R.mode !== 'tiny' && !gap; pn.textContent = R.mode === 'tiny' ? t('plan_tiny') : (gap ? t('plan_gap') : ''); }
   }
 
   function renderCost(R) {
@@ -433,7 +436,7 @@ window.CS = (function () {
     set('rLive', fmt(R.live)); set('rLiveNow', S.liveNow > 0 ? t('live_now', { n: fmt(S.liveNow) }) : '');
     set('rWeek', tiny ? '–' : fmt(R.perWeek, R.perWeek < 3 ? 1 : 0));
     set('rWeekS', R.sets >= 1 ? t('week_s', { n: fmt(R.sets / WPM, 1) }) : t('week_s0'));
-    set('rSets', tiny ? '1' : fmt(R.sets)); if (tiny) set('rSetsS', t('sets_tiny')); else set('rSetsS', R.setBudget > 0 ? t('sets_s', { b: money(R.setBudget) }) : t('sets_s0'));
+    set('rSets', tiny ? '1' : fmt(R.sets)); if (tiny) set('rSetsS', t('sets_tiny')); else set('rSetsS', R.setBudget > 0 ? t('sets_s', { b: money(R.setBudget), c: money(R.perCreative) }) : t('sets_s0'));
     if (opts.dailyHint) set('dailyHint', S.spend > 0 ? opts.dailyHint(R) : '');
 
     const gb = $('gapBox');
@@ -446,16 +449,16 @@ window.CS = (function () {
     }
 
     const al = [];
-    if (R.mode === 'tiny') al.push(['', t('al_tiny', { s: money(R.rules.tinySpend) })]);
+    const under20 = S.spend > 0 && S.spend < R.rules.under20;
+    if (R.mode === 'tiny' && !under20) al.push(['', t('al_tiny', { s: money(R.rules.tinySpend) })]);
     if (R.individual) al.push(['good', t('al_ind', { n: fmt(R.rules.highN) })]);
     if (R.liveRaised) al.push(['', t('al_minlive', { n: fmt(R.rules.minLive) })]);
     if (S.liveNow > 0 && R.live > 0 && S.liveNow < R.live * 0.9) al.push(['', t('al_live', { a: fmt(S.liveNow), b: fmt(R.live) })]);
+    if (under20) al.push(['', t('al_under20', { s: money(R.rules.under20) })]);
+    if (R.costShare * 100 > R.rules.costWarnPct) al.push(['', t('al_cost', { p: fmt(R.costShare * 100) })]);
     if (S.cpa > 0 && S.spend > 0) {
-      if (opts.internal) {
-        const cs = R.setBudget / S.cpa, cw = cs / S.days * 7;
-        let tx = t('al_cpa', { c: money(S.cpa), m: fmt(R.conv), s: fmt(cs), w: fmt(cw) });
-        if (cw < 50) { tx += t('al_cpa_low') + (opts.cpaHint || ''); al.push(['', tx]); } else al.push(['good', tx]);
-      } else al.push(['good', t('al_cpa_pub', { c: money(S.cpa), m: fmt(R.conv) })]);
+      al.push(['good', t('al_cpa_pub', { c: money(S.cpa), m: fmt(R.conv) })]);
+      if (R.convPerCreative > 0 && R.convPerCreative < R.rules.lowConv) al.push(['', t('al_cpa_conv', { c: money(S.cpa), n: fmt(R.convPerCreative, R.convPerCreative < 3 ? 1 : 0) })]);
     }
     if (R.revenue > 0) al.push(['good', t('al_roas', { r: fmt(S.roas, 2), t: money(R.revenue) })]);
     const ae = $('alerts'); if (ae) ae.innerHTML = al.map(([c, x]) => `<div class="alert ${c}">${esc(x)}</div>`).join('');
@@ -481,6 +484,6 @@ window.CS = (function () {
 
   function tidy(el) { if (el.value.trim() === '') return; el.value = fmtIn(num(el.value), 2); }
 
-  return { I, DPM, WPM, MARKET_KEYS, CURRENCIES, PRESETS, setLang, getLang, setCurrency, getCurrency, setRates, rate, toCZK, fromCZK, curSymbol,
+  return { I, DPM, WPM, MARKET_KEYS, CURRENCIES, PRESETS, PRESETS_DAY, setLang, getLang, setCurrency, getCurrency, setRates, rate, toCZK, fromCZK, curSymbol,
     num, fmt, fmtIn, money, kc, t, pf, esc, applyTexts, marketOptions, calc, render, renderExamples, weekSplit, tidy, SITUATIONS };
 })();

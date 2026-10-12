@@ -1,7 +1,7 @@
 /* Creative Scaler – veřejná část */
 (function () {
   const { num, fmt, fmtIn, t, applyTexts, calc, render, renderExamples, SITUATIONS, setLang, getLang, setCurrency, getCurrency, setRates,
-    toCZK, fromCZK, money, curSymbol, tidy, DPM, PRESETS } = CS;
+    toCZK, fromCZK, money, curSymbol, tidy, DPM, PRESETS, PRESETS_DAY } = CS;
   const $ = id => document.getElementById(id);
   let cfg = null, last = null;
   const state = { spend: 300000, mode: 'month', sit: 'stable', cpa: 0, conv: 0, convSource: 'cpa', over: {} }; // peníze v Kč, spend měsíčně
@@ -47,13 +47,13 @@
     }
   }
   function presets() {
-    const list = PRESETS[getCurrency()];
-    $('presetSeg').innerHTML = list.map(v => `<button type="button" data-v="${v}">${v >= 1e6 ? fmt(v / 1e6, 1) + 'M' : fmt(v / 1000, 1) + 'k'}</button>`).join('');
+    const day = state.mode === 'day', list = (day ? PRESETS_DAY : PRESETS)[getCurrency()];
+    $('presetSeg').innerHTML = list.map(v => `<button type="button" data-v="${v}">${v >= 1e6 ? fmt(v / 1e6, 1) + "M" : (v >= 1000 ? fmt(v / 1000, 1) + "k" : fmt(v))}</button>`).join('');
     markPresets();
   }
   function markPresets() {
-    const monthly = Math.round(fromCZK(state.spend));
-    $('presetSeg').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.v) === monthly)));
+    const shown = Math.round(fromCZK(state.mode === 'day' ? state.spend / DPM : state.spend));
+    $('presetSeg').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(Math.abs(Number(b.dataset.v) - shown) <= Math.max(1, Number(b.dataset.v) * 0.005))));
   }
   function labels() {
     const sym = curSymbol();
@@ -95,14 +95,14 @@
   $('spend').addEventListener('input', () => { const v = num($('spend').value); state.spend = toCZK(state.mode === 'day' ? v * DPM : v); $('spendR').value = Math.min(5000000, Math.max(10000, state.spend)); update(); });
   $('spend').addEventListener('blur', () => tidy($('spend')));
   $('spendR').addEventListener('input', e => { state.spend = num(e.target.value); showSpend(); update(); });
-  $('presetSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.spend = toCZK(Number(b.dataset.v)); showSpend(); update(); });
+  $('presetSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.spend = toCZK(Number(b.dataset.v) * (state.mode === 'day' ? DPM : 1)); showSpend(); update(); });
   $('cpa').addEventListener('input', () => { state.cpa = toCZK(num($('cpa').value)); state.convSource = 'cpa'; state.conv = 0; $('conv').value = ''; update(); });
   $('conv').addEventListener('input', () => { state.conv = num($('conv').value); state.convSource = 'conv'; state.cpa = state.conv > 0 ? state.spend / state.conv : 0; $('cpa').value = ''; last = calc(read()); render(last, renderOpts()); afterRender(); });
   ['cpa', 'conv', 'roas', 'current', 'liveNow'].forEach(id => $(id).addEventListener('blur', () => tidy($(id))));
   ['roas', 'current', 'liveNow'].forEach(id => $(id).addEventListener('input', update));
   document.querySelectorAll('#sitSeg button').forEach(b => b.addEventListener('click', () => { state.sit = b.dataset.sit; showSit(); update(); }));
   document.querySelectorAll('#curSeg button').forEach(b => b.addEventListener('click', () => { setCurrency(b.dataset.cur); texts(); showSpend(); showCpa(); update(); }));
-  document.querySelectorAll('#modeSeg button').forEach(b => b.addEventListener('click', () => { state.mode = b.dataset.mode; labels(); showSpend(); update(); }));
+  document.querySelectorAll('#modeSeg button').forEach(b => b.addEventListener('click', () => { state.mode = b.dataset.mode; labels(); presets(); showSpend(); update(); }));
   document.querySelectorAll('#langSeg button').forEach(b => b.addEventListener('click', () => { setLang(b.dataset.lang); texts(); update(); }));
   $('f').addEventListener('submit', e => e.preventDefault());
 
@@ -131,5 +131,5 @@
       renderExamples(c.examples);
       showSpend(); showCpa(); update();
     })
-    .catch(() => {});
+    .catch(e => { if (e.message !== 'auth') console.error('[creative-scaler]', e); });
 })();
