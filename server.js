@@ -111,6 +111,13 @@ function requireAdmin(req, res, next) {
 }
 
 const VIEWS = path.join(__dirname, 'views');
+// verze souborů v HTML (?v=…), aby prohlížeč po nasazení nenačetl starý kód z mezipaměti
+const ASSET_V = (process.env.RAILWAY_GIT_COMMIT_SHA || String(Date.now())).slice(0, 10);
+const viewCache = new Map();
+function sendView(res, name) {
+  if (!viewCache.has(name)) viewCache.set(name, require('fs').readFileSync(path.join(VIEWS, name), 'utf8').replace(/(\/(?:assets|admin)\/[\w.-]+\.(?:js|css))"/g, `$1?v=${ASSET_V}"`));
+  res.set('Cache-Control', 'no-cache').type('html').send(viewCache.get(name));
+}
 const PRIVATE = path.join(__dirname, 'private');
 
 app.get('/login', (req, res) => {
@@ -136,8 +143,8 @@ app.get('/api/admin/mode', (req, res) => res.json({ open: ADMIN_OPEN }));
 /* ---------- stránky a soubory ---------- */
 app.use('/assets', express.static(path.join(__dirname, 'public', 'assets'), { maxAge: '1h' }));
 app.get('/healthz', (req, res) => res.json({ ok: true }));
-app.get('/', requirePublic, (req, res) => res.sendFile(path.join(VIEWS, 'public.html')));
-app.get('/admin', requireAdmin, (req, res) => res.sendFile(path.join(VIEWS, 'admin.html')));
+app.get('/', requirePublic, (req, res) => sendView(res, 'public.html'));
+app.get('/admin', requireAdmin, (req, res) => sendView(res, 'admin.html'));
 app.get(['/READ_ME', '/read_me', '/readme', '/READ-ME'], requireAdmin, (req, res) => res.sendFile(path.join(VIEWS, 'readme.html')));
 app.get('/admin/admin.js', requireAdmin, (req, res) => res.sendFile(path.join(PRIVATE, 'admin.js')));
 
